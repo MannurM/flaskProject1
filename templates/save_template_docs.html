@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}
+ОТ_Челно-Вершины
+{% endblock %}
+{% block company%}
+ГБОУ СОШ (ОЦ) с.Челно-Вершины.
+Кабинет организатора курсов
+{% endblock %}
+
+{% block username %}
+{% endblock %}
+
+{% block hidden_timer %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row mb-3">
+            {% block sert_create %}
+                {% for cat, msg in get_flashed_messages(True) %}
+                <div class="flash {{cat}}">{{msg}}</div>
+                {% endfor %}
+                <a>
+                    Создать шаблон удостоверения и протокола
+                </a>
+                <div class="col-sm-6">
+                <form action="{{ url_for('save_template_docs') }}" method=post enctype=multipart/form-data>
+                <p><label> Наименование курса </label>
+                    <input type=text class="form-control" name="theme" required /></p>
+                <p><label> Вставить файл шаблона протокола </label>
+                    <input type=file class="form-control" name="prot" required /></p>
+                <p><label> Вставить файл шаблона удостоверения </label>
+                    <input type=file class="form-control" name="sert" required /></p>
+                <p><input type=submit value=Загрузить></p>
+                </form>
+                </div>
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+ ГБОУ СОШ (ОЦ) с. Челно-Вершины
+{% endblock %}
