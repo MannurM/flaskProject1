@@ -6,13 +6,11 @@ import os
 import sqlite3
 
 
-
-from creater_protokol import convert_sert, convert_protocol
 from flask import Flask, g
 from flask_login import LoginManager
 from UserLogin_2 import UserLogin
 from FDataBase import FDataBase
-from convertpdf import convert_to_pdf
+
 
 temp_dict = {}
 
@@ -173,10 +171,6 @@ def check_save_profile(user_id, save_profile, profile_data):
 
 # Распаковка файла протокола или сертификата из БД
 def convert_from_binary_data(filename, blob_data):
-
-
-
-
     # TODO 1. передать в функцию имя файла и бинарный файл,
     # TODO 2. сразу бинарный файл и  название файла в БД (название файла удостоверения иил протокола сохранить в БД)
     # TODO 3. открыть файл с навазнием из БД, закачать бинарные данные данные , закрыть файл, вернуть файл из конвертера
@@ -205,11 +199,11 @@ def convert_path(prot, sert):
 
 
 # Создание Сертификата и протокола
-def create_sert(user_id): # вариант docx
-    name, firstname, lastname, dateborn, name_suborganization, position, email = dbase.getProfile(user_id)
-    theme, count_prob, status_exzam, data_exzam = dbase.getStatus_exzam(user_id)
+def create_sert(user_id):
+    theme, count_prob, status_exzam, data_exzam = dbase.getStatus_exzam(user_id=user_id)
     theme2, course_hourses = dbase.read_for_sert()
     data_org = dbase.read_organization()
+    name, firstname, lastname, dateborn, name_suborganization, position, email = dbase.getProfile(user_id=user_id)
     print('read_DB!')
     data_sert={}
     for key in data_org.keys():
@@ -224,22 +218,22 @@ def create_sert(user_id): # вариант docx
     data_sert['status_exzam'] = status_exzam
     data_sert['theme'] = theme
     data_sert['course_hourses'] = course_hourses
-
-    name_sert, sert_doc = convert_sert(data_sert)
-    name_protocol, prot_doc = convert_protocol(data_sert)
-    print("convert sert_prot!")
-    # Сохранить следующий номер протокола и сертификата в БД
-    data_save = {}
-    data_save['protocol_N'] = data_org['protocol_N']
-    data_save['number_sert'] = data_org['number_sert']
-    data_save['id_org'] = data_org['id_org']
-    dbase.save_protocol_N(data_save)
-
-    blob_sertificate = sert_doc
-    blob_protocol = prot_doc
-    print('theme2, blob_sertificate, blob_protocol, name_protocol, name_sert',
-          theme2, blob_sertificate, blob_protocol, name_protocol, name_sert)
-    return theme2, blob_sertificate, blob_protocol, name_protocol, name_sert
+    return data_sert
+    # name_sert, sert_doc = convert_sert(data_sert) # TODO заменить модуль создания  сертификата
+    # name_protocol, prot_doc = convert_protocol(data_sert)
+    # print("convert sert_prot!")
+    # # Сохранить следующий номер протокола и сертификата в БД
+    # data_save = {}
+    # data_save['protocol_N'] = data_org['protocol_N']
+    # data_save['number_sert'] = data_org['number_sert']
+    # data_save['id_org'] = data_org['id_org']
+    # dbase.save_protocol_N(data_save)
+    #
+    # blob_sertificate = sert_doc
+    # blob_protocol = prot_doc
+    # print('theme2, blob_sertificate, blob_protocol, name_protocol, name_sert',
+    #       theme2, blob_sertificate, blob_protocol, name_protocol, name_sert)
+    # return theme2, blob_sertificate, blob_protocol, name_protocol, name_sert
 
 
 # Извлечение из БД учебных материалов по курсу
@@ -273,7 +267,7 @@ def save_status_user(user_id, data):
 
 # Вызов из БД личных данных пользователя
 def getprofile(user_id):
-    name, firstname, lastname, dateborn, name_suborganization, position, email = dbase.getProfile(user_id)
+    name, firstname, lastname, dateborn, name_suborganization, position, email = dbase.getProfile(user_id=user_id)
     profile_data = {
         'name': name,
         'firstname': firstname,
@@ -320,3 +314,4 @@ def read_course(id_course):
     with open(name_sert,'wb') as f:
         sertificat = f.write(sert)
     return protocol, sertificat
+

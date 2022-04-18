@@ -32,7 +32,7 @@ def open_fon():
     draw.text((5, 115), text, font=font, fill=ImageColor.colormap['black'])
     text = 'Должность'
     draw.text((5,135), text, font=font, fill=ImageColor.colormap['black'])
-    text = 'Проведена проверка знаний требований охраны труда по'
+    text = 'Проведена проверка знаний требований охраны труда'
     draw.text((5,155), text, font=font, fill=ImageColor.colormap['black'])
     text = 'в объеме'
     draw.text((5, 195), text, font=font, fill=ImageColor.colormap['black'])
@@ -46,16 +46,17 @@ def open_fon():
     draw.text((5, 255), text, font=font, fill=ImageColor.colormap['black'])
     text = 'Дата'
     draw.text((5, 285), text, font=font, fill=ImageColor.colormap['black'])
-
-
-
     # draw.text((286, 259), date, font=font, fill=ImageColor.colormap['black'])  # время
-    print('!!!!')
 
     file = 'template_sert.png'
-    # TODO Изменить путь сохранения  изображения
+    # Изменить путь сохранения  изображения
     path_file = os.path.normpath(os.getcwd() + '/' + 'static/templates_sert/')
-    image_teplate.save(file)
     # image_teplate.show()
-    # TODO стнадартизировать размер изображения!! на А5
-open_fon()
+    # перейти в директорию для сохранения файла
+    os.chdir(path_file)
+    image_teplate.save(file)
+    # TODO стандартизировать размер изображения!! на А5
+
+
+if __name__ == '__main__':
+    open_fon()

@@ -194,9 +194,9 @@ def check_profile(user_id):
 @login_required
 def sertification(user_id): #   протокол и удостоверение созданы и записаны в БД
     print('sertification')
-    theme, blob_sertificate, blob_protocol, name_protocol, name_sert = modules.create_sert(user_id)
-    print('sertification_2')
-    modules.save_sertificat(user_id, theme, blob_sertificate, blob_protocol, name_protocol, name_sert)
+    data_sert = modules.create_sert(user_id=user_id)
+    # print('sertification_2')
+    # modules.save_sertificat(user_id, theme, blob_sertificate, blob_protocol, name_protocol, name_sert)
     return redirect(url_for('courses', user_id=user_id))
 
 
