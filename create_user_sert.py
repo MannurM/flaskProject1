@@ -21,16 +21,20 @@ def past_in_templates(data_sert):
     dict_label_user = create_dict_label_user()
 
     for label in dict_label_user.keys():
-        print(label)
         if label in data_sert.keys():
             text = str(data_sert[label])
             coordinat = dict_label_user[label]['coordinat']
             font = dict_label_user[label]['font']
             fill = dict_label_user[label]['fill']
-            print(text)
-            print(coordinat, font, fill)
             draw.text(coordinat, text, font=font, fill=fill)
-    image_user.show(10)
+    # image_user.show(10)
+    # TODO Сохранить картинку в файл и вернуть в основную программу
+    sertificat_file = 'sert.png'
+    sertificat_file = image_user.save(sertificat_file)
+    # with open(sertificat_file, 'wb') as file:
+    #     file.write(image_user)
+    print(sertificat_file)
+    return sertificat_file
 
 
 def create_dict_label_user():
@@ -42,16 +46,16 @@ def create_dict_label_user():
             'font': ImageFont.truetype(os.path.join('fonts', 'arial.ttf'), size=14),
             'fill': ImageColor.colormap['black']
             },
-        'number_order': {
+        'number_sert': {
             'label_name': ' ',
-            'coordinat': (118, 195),
+            'coordinat': (265, 75),
             'text': '',
             'font': ImageFont.truetype(os.path.join('fonts', 'arial.ttf'), size=14),
             'fill': ImageColor.colormap['black']
             },
         'name_user': {
             'label_name': ' ',
-            'coordinat': (65, 93),
+            'coordinat': (55, 93),
             'text': '',
             'font': ImageFont.truetype(os.path.join('fonts', 'arial.ttf'), size=14),
             'fill': ImageColor.colormap['black']
@@ -65,14 +69,14 @@ def create_dict_label_user():
             },
         'lastname': {
             'label_name': ' ',
-            'coordinat': (185, 93),
+            'coordinat': (215, 93),
             'text': '',
             'font': ImageFont.truetype(os.path.join('fonts', 'arial.ttf'), size=14),
             'fill': ImageColor.colormap['black']
             },
         'name_suborganization': {
             'label_name': ' ',
-            'coordinat': (185, 113),
+            'coordinat': (105, 113),
             'text': '',
             'font': ImageFont.truetype(os.path.join('fonts', 'arial.ttf'), size=14),
             'fill': ImageColor.colormap['black']
@@ -84,30 +88,37 @@ def create_dict_label_user():
             'font': ImageFont.truetype(os.path.join('fonts', 'arial.ttf'), size=14),
             'fill': ImageColor.colormap['black']
             },
+        'theme': {
+            'label_name': ' ',
+            'coordinat': (65, 173),
+            'text': '',
+            'font': ImageFont.truetype(os.path.join('fonts', 'arial.ttf'), size=14),
+            'fill': ImageColor.colormap['black']
+            },
         'course_hourses': {
             'label_name': ' ',
-            'coordinat': (55, 193),
+            'coordinat': (65, 193),
             'text': '',
             'font': ImageFont.truetype(os.path.join('fonts', 'arial.ttf'), size=14),
             'fill': ImageColor.colormap['black']
             },
         'protocol_N': {
             'label_name': ' ',
-            'coordinat': (217, 213),
+            'coordinat': (220, 213),
             'text': '',
             'font': ImageFont.truetype(os.path.join('fonts', 'arial.ttf'), size=14),
             'fill': ImageColor.colormap['black']
             },
-        'date_exzam': {
+        'data_exzam': {
             'label_name': ' ',
-            'coordinat': (247, 213),
+            'coordinat': (267, 213),
             'text': '',
             'font': ImageFont.truetype(os.path.join('fonts', 'arial.ttf'), size=14),
             'fill': ImageColor.colormap['black']
             },
-        'name_director': {
+        'director_name': {
             'label_name': ' ',
-            'coordinat': (55, 253),
+            'coordinat': (155, 253),
             'text': '',
             'font': ImageFont.truetype(os.path.join('fonts', 'arial.ttf'), size=14),
             'fill': ImageColor.colormap['black']
@@ -140,13 +151,13 @@ def create_sert(user_id):
     data_sert = {}
     for key in data_org.keys():
         data_sert[key] = data_org[key]
-    data_sert['name'] = name
+    data_sert['name_user'] = name
     data_sert['firstname'] = firstname
     data_sert['lastname'] = lastname
-    data_sert['dateborn'] = dateborn
+    data_sert['date_signature'] = data_exzam[:11]
     data_sert['name_suborganization'] = name_suborganization
     data_sert['position'] = position
-    data_sert['data_exzam'] = data_exzam
+    data_sert['data_exzam'] = data_exzam[:11]
     data_sert['status_exzam'] = status_exzam
     data_sert['theme'] = theme
     data_sert['course_hourses'] = course_hourses
@@ -182,8 +193,6 @@ def create_sert(user_id):
 #         # file.seek(0)
 
 
-if __name__ == '__main__':
-    user_id = '1'
-    # open_template()
-    data_sert = create_sert(user_id)
-    past_in_templates(data_sert)
+# if __name__ == '__main__':
+#     data_sert = create_sert(user_id)
+#     past_in_templates(data_sert)

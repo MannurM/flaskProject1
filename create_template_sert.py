@@ -26,23 +26,27 @@ def open_fon():
     text = 'УДОСТОВЕРЕНИЕ № '
     draw.text((120, 75), text, font=font, fill=ImageColor.colormap['black'])
     font = ImageFont.truetype(font_path, size=12)
-    text = 'Выдано'
+    text = 'ФИО: '
     draw.text((5, 95), text, font=font, fill=ImageColor.colormap['black'])
-    text = 'Место работы'
+    text = 'Место работы: '
     draw.text((5, 115), text, font=font, fill=ImageColor.colormap['black'])
-    text = 'Должность'
+    text = 'Должность: '
     draw.text((5,135), text, font=font, fill=ImageColor.colormap['black'])
-    text = 'Проведена проверка знаний требований охраны труда'
+    text = 'Прошел(прошла) проверку знаний требований '
     draw.text((5,155), text, font=font, fill=ImageColor.colormap['black'])
-    text = 'в объеме'
+    text = 'по теме: '
+    draw.text((5, 175), text, font=font, fill=ImageColor.colormap['black'])
+    text = 'в объеме:'
     draw.text((5, 195), text, font=font, fill=ImageColor.colormap['black'])
+    text = ' часов '
+    draw.text((95, 195), text, font=font, fill=ImageColor.colormap['black'])
     text = 'Протокол заседания комиссии'
     draw.text((5, 215), text, font=font, fill=ImageColor.colormap['black'])
     text = '№'
     draw.text((205, 215), text, font=font, fill=ImageColor.colormap['black'])
     text = 'от'
     draw.text((245, 215), text, font=font, fill=ImageColor.colormap['black'])
-    text = 'Директор (руководитель)'
+    text = 'Директор '
     draw.text((5, 255), text, font=font, fill=ImageColor.colormap['black'])
     text = 'Дата'
     draw.text((5, 285), text, font=font, fill=ImageColor.colormap['black'])

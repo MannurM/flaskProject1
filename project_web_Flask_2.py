@@ -1,5 +1,5 @@
 # utf-8
-
+import create_user_sert
 import modules
 
 from modules import app
@@ -61,7 +61,6 @@ def edu_test(user_id):
     data = modules.status_user(user_id=user_id)
     temp_dict, list_answer_just, list_label_use = modules.unpacking_edutest(user_id)
     modules.save_(user_id, list_answer_just, list_label_use)  # Сохранить в БД правильные ответы
-
     modules.temp_dict = temp_dict
     return render_template('edu_test.html', data=data, temp_dict=temp_dict)
 
@@ -194,9 +193,14 @@ def check_profile(user_id):
 @login_required
 def sertification(user_id): #   протокол и удостоверение созданы и записаны в БД
     print('sertification')
-    data_sert = modules.create_sert(user_id=user_id)
+    data_sert = create_user_sert.create_sert(user_id)
+    sertificat_file = create_user_sert.past_in_templates(data_sert)
+    # data_sert = modules.create_sert(user_id=user_id)
     # print('sertification_2')
-    # modules.save_sertificat(user_id, theme, blob_sertificate, blob_protocol, name_protocol, name_sert)
+    theme = 'ОТ'
+    name_sert = 'сертификат'
+
+    modules.save_sertificat(user_id, theme, sertificat_file, name_sert)
     return redirect(url_for('courses', user_id=user_id))
 
 

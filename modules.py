@@ -88,7 +88,7 @@ def status_user(user_id):
     name, firstname, lastname = dbase.getStatus_name(user_id=user_id)
     theme, count_prob, status_exzam, data_exzam = dbase.getStatus_exzam(user_id=user_id)
     id_course, theme, edu_materials, edu_other, edu_additional = dbase.getCourse()
-    data = {
+    data_status = {
         'id_course': id_course,
         'theme': theme,
         'edu_materials': edu_materials,
@@ -104,7 +104,7 @@ def status_user(user_id):
         }
     if dbase.check_exist(user_id=user_id):
         id, theme_1, protocol, sertificate, name_protocol, name_sert = dbase.read_sertificat(user_id)
-        data['sert'] = 1 # todo ПОЧЕМУ ОДИН?
+        data_status['sert'] = 1 # todo ПОЧЕМУ ОДИН?
 
         # TODO data['protocol'], data['sertificate'] - это ссылки на файлы в БД
         # TODO проверка  рендерится - если скачать сертификат, то запускается скрипт
@@ -112,16 +112,16 @@ def status_user(user_id):
         # TODO Ответ формируется во временной памяти. Открывается новая страница браузера с параметром download.
         # TODO Предлагается путь для сохранения.
 
-        blob_data = protocol
-        filename = name_protocol
-        protocol = convert_from_binary_data(filename, blob_data)
-        data['protocol'] = protocol
+        # blob_data = protocol
+        # filename = name_protocol
+        # protocol = convert_from_binary_data(filename, blob_data)
+        # data_status['protocol'] = protocol
 
         blob_data = sertificate
         filename = name_sert
         sertificate = convert_from_binary_data(filename, blob_data)
-        data['sertificate'] = sertificate
-    return data
+        data_status['sertificate'] = sertificate
+    return data_status
 
 
 # Распаковка теста из БД
@@ -281,8 +281,8 @@ def getprofile(user_id):
 
 
 # Запись в БД созданного сертификата
-def save_sertificat(user_id, theme, blob_sertificate, blob_protocol, name_protocol, name_sert):
-    dbase.save_sertificat(user_id, theme, blob_sertificate, blob_protocol, name_protocol, name_sert)
+def save_sertificat(user_id, theme, blob_sertificate, name_sert):
+    dbase.save_sertificat(user_id, theme, blob_sertificate, name_sert)
     return
 
 
