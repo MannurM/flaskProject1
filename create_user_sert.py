@@ -24,12 +24,14 @@ def past_in_templates(data_sert):
     image_user = Image.open(path_file)
     draw = ImageDraw.Draw(image_user)
     dict_label_user = create_dict_label_user()
+
     for label in dict_label_user.keys():
         if label in data_sert.keys():
             text = data_sert[label]
             coordinat = dict_label_user[label]['coordinat']
             font = dict_label_user[label]['font']
             fill = dict_label_user[label]['fill']
+            print(text, coordinat, font, fill)
             draw.text(coordinat, text, font=font, fill=fill)
     image_user.show()
 
