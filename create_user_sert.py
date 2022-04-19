@@ -1,17 +1,12 @@
 # utf-8
 
-from PIL import Image, ImageDraw, ImageColor, ImageFont
-import io
-import ast
-import tempfile
 import os
 import sqlite3
-import modules
+from FDataBase import FDataBase
+from PIL import Image, ImageDraw, ImageColor, ImageFont
 
 
 # конфигурация
-from FDataBase import FDataBase
-
 DATABASE = 'pr_ot.db'
 DEBUG = True
 SECRET_KEY = 'fdgfh78@#5?>gfhf89dx,v06k'
@@ -26,77 +21,79 @@ def past_in_templates(data_sert):
     dict_label_user = create_dict_label_user()
 
     for label in dict_label_user.keys():
+        print(label)
         if label in data_sert.keys():
-            text = data_sert[label]
+            text = str(data_sert[label])
             coordinat = dict_label_user[label]['coordinat']
             font = dict_label_user[label]['font']
             fill = dict_label_user[label]['fill']
-            print(text, coordinat, font, fill)
+            print(text)
+            print(coordinat, font, fill)
             draw.text(coordinat, text, font=font, fill=fill)
-    image_user.show()
+    image_user.show(10)
 
 
 def create_dict_label_user():
     dict_label_user = {
         'name_organization': {
             'label_name': ' ',
-            'coordinat': (5, 38),
+            'coordinat': (45, 38),
             'text': '',
             'font': ImageFont.truetype(os.path.join('fonts', 'arial.ttf'), size=14),
             'fill': ImageColor.colormap['black']
             },
         'number_order': {
             'label_name': ' ',
-            'coordinat': (118, 95),
+            'coordinat': (118, 195),
             'text': '',
             'font': ImageFont.truetype(os.path.join('fonts', 'arial.ttf'), size=14),
             'fill': ImageColor.colormap['black']
             },
         'name_user': {
             'label_name': ' ',
-            'coordinat': (15, 93),
+            'coordinat': (65, 93),
             'text': '',
             'font': ImageFont.truetype(os.path.join('fonts', 'arial.ttf'), size=14),
             'fill': ImageColor.colormap['black']
             },
         'firstname': {
             'label_name': ' ',
-            'coordinat': (35, 93),
+            'coordinat': (135, 93),
             'text': '',
             'font': ImageFont.truetype(os.path.join('fonts', 'arial.ttf'), size=14),
             'fill': ImageColor.colormap['black']
             },
         'lastname': {
             'label_name': ' ',
-            'coordinat': (65, 93),
+            'coordinat': (185, 93),
             'text': '',
             'font': ImageFont.truetype(os.path.join('fonts', 'arial.ttf'), size=14),
             'fill': ImageColor.colormap['black']
             },
         'name_suborganization': {
             'label_name': ' ',
-            'coordinat': (15, 113),
+            'coordinat': (185, 113),
             'text': '',
             'font': ImageFont.truetype(os.path.join('fonts', 'arial.ttf'), size=14),
             'fill': ImageColor.colormap['black']
             },
         'position': {
             'label_name': ' ',
-            'coordinat': (15, 133),
+            'coordinat': (75, 133),
             'text': '',
             'font': ImageFont.truetype(os.path.join('fonts', 'arial.ttf'), size=14),
             'fill': ImageColor.colormap['black']
             },
         'course_hourses': {
             'label_name': ' ',
-            'coordinat': (15, 193),
+            'coordinat': (55, 193),
             'text': '',
             'font': ImageFont.truetype(os.path.join('fonts', 'arial.ttf'), size=14),
             'fill': ImageColor.colormap['black']
             },
         'protocol_N': {
             'label_name': ' ',
-            'coordinat': (207, 213),
+            'coordinat': (217, 213),
             'text': '',
             'font': ImageFont.truetype(os.path.join('fonts', 'arial.ttf'), size=14),
             'fill': ImageColor.colormap['black']
@@ -117,7 +114,7 @@ def create_dict_label_user():
             },
         'date_signature': {
             'label_name': ' ',
-            'coordinat': (15, 283),
+            'coordinat': (35, 283),
             'text': '',
             'font': ImageFont.truetype(os.path.join('fonts', 'arial.ttf'), size=14),
             'fill': ImageColor.colormap['black']
