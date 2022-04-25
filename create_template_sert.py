@@ -1,17 +1,27 @@
 # utf-8
 import os
+import sqlite3
+from FDataBase import FDataBase
 from PIL import Image, ImageDraw, ImageColor, ImageFont
+
+
+# конфигурация
+DATABASE = 'pr_ot.db'
+DEBUG = True
+SECRET_KEY = 'fdgfh78@#5?>gfhf89dx,v06k'
 
 #  скачать файл фона от организатора
 #  скачать названия полей - наименование организации, должность, подпись,  тема  и другие
 #  взять из формы запроса информации - содержание полей. сохранить в БД
 #  сохранить шаблон в БД
+
+
 def open_fon():
     font_path = os.path.join('fonts', 'arial.ttf')
     path_teplate = os.path.normpath(os.getcwd() + '/' + 'images/templ.png')
-    image_teplate = Image.open(path_teplate)
-    draw = ImageDraw.Draw(image_teplate)
-    print(path_teplate)
+    image_template = Image.open(path_template)
+    draw = ImageDraw.Draw(image_template)
+    print(path_template)
     font = ImageFont.truetype(font_path, size=14)
     text = 'УДОСТОВЕРЕНИЕ'
     draw.text((130, 5), text, font=font, fill=ImageColor.colormap['black'])
@@ -58,9 +68,44 @@ def open_fon():
     # image_teplate.show()
     # перейти в директорию для сохранения файла
     os.chdir(path_file)
-    image_teplate.save(file)
+    file = image_template.save(file)
+    # TODO нужно вернуть - expected str, bytes or os.PathLike object, not PngImageFile
+
     # TODO стандартизировать размер изображения!! на А5
+    print(type(file))
+    return file
+
+
+def read_names_courses():
+    pass
+
+
+def save_in_subd(file_sert):
+    db = connect_db()
+    dbase = FDataBase(db)
+    data_file = {}
+    file_convert = convert_blob(file_sert)  # TODO нужно сконвертировать в  бинарный файл
+    data_file['theme'] = 'Охрана труда'
+    data_file['template_sertificat'] = file_convert
+    data_file['name_template_sertificat'] = 'sertificat.png'
+
+    dbase.create_template_sert(data_file)
+    # dbase.save_insubd(file)
+
+
+def convert_blob(file):
+    print(type(file), file)
+    with open(file, 'rb') as f:
+        file_blob = f.read()
+        return file_blob
+
+
+def connect_db():
+    conn = sqlite3.connect('pr_ot.db')
+    conn.row_factory = sqlite3.Row
+    return conn
 
 
 if __name__ == '__main__':
-    open_fon()
+    file_sert = open_fon()
+    save_in_subd(file_sert)

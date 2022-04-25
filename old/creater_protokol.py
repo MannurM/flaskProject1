@@ -5,7 +5,7 @@ from docx2pdf import convert
 
 def convert_protocol(data):
     print(os.getcwd())
-    doc = DocxTemplate('static/templates_sert/template_protocol.docx')  # наименование файла шаблона + путь
+    doc = DocxTemplate('../static/templates_sert/template_protocol.docx')  # наименование файла шаблона + путь
     data_sert = data
 
     context = {'protocol_N': data_sert['protocol_N'],
@@ -56,7 +56,7 @@ def convert_protocol(data):
 
 def convert_sert(data):
     # TODO скачать шаблон из БД, распаковать в досx из blob,
-    doc = DocxTemplate("static/templates_sert/template_sert.docx")  # наименование файла шаблона
+    doc = DocxTemplate("../static/templates_sert/template_sert.docx")  # наименование файла шаблона
     data_sert = data
 
     context = {'protocol_N': data_sert['protocol_N'],

@@ -329,12 +329,13 @@ class FDataBase:
 
     def create_template_sert(self, data):
         print('data', data)
-        prot = data['template_protocol']
+        # prot = data['template_protocol']
         sert = data['template_sertificat']   # TODO BLOB?
+        name_file = data['name_template_sertificat']
         theme_in = data['theme']
-        val = (prot, sert, theme_in)
+        val = (name_file, sert, theme_in)  # prot
         try:
-            sqlite_update = ('Update courses template_protocol=?, template_sertificat=? where theme = ?')
+            sqlite_update = ('Update courses  template_sertificat=?, name_template_sertificat=?, where theme = ?')
             self.__cur.execute(sqlite_update, val)
             return
         except sqlite3.Error as e:
@@ -363,3 +364,6 @@ class FDataBase:
         except sqlite3.Error as e:
             print("Ошибка получения курса из БД(read_teplates) " + str(e))
         return
+
+    def save_insubd(self, file):
+        pass

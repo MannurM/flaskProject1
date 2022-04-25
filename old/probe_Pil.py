@@ -14,7 +14,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageColor
 
 def make_ticket(fio, from_, to, date, out_name_file=None):
     fio, from_, to, date = fio, from_, to, date
-    font_path = os.path.join('fonts', 'arial.ttf')
+    font_path = os.path.join('../fonts', 'arial.ttf')
     path_teplate = os.path.normpath(os.getcwd() + '/' + 'images/ticket_template.png')
 
     image_teplate = Image.open(path_teplate)
