@@ -18,7 +18,7 @@ SECRET_KEY = 'fdgfh78@#5?>gfhf89dx,v06k'
 
 def open_fon():
     font_path = os.path.join('fonts', 'arial.ttf')
-    path_teplate = os.path.normpath(os.getcwd() + '/' + 'images/templ.png')
+    path_template = os.path.normpath(os.getcwd() + '/' + 'images/templ.png')
     image_template = Image.open(path_template)
     draw = ImageDraw.Draw(image_template)
     print(path_template)
@@ -41,9 +41,9 @@ def open_fon():
     text = 'Место работы: '
     draw.text((5, 115), text, font=font, fill=ImageColor.colormap['black'])
     text = 'Должность: '
-    draw.text((5,135), text, font=font, fill=ImageColor.colormap['black'])
+    draw.text((5, 135), text, font=font, fill=ImageColor.colormap['black'])
     text = 'Прошел(прошла) проверку знаний требований '
-    draw.text((5,155), text, font=font, fill=ImageColor.colormap['black'])
+    draw.text((5, 155), text, font=font, fill=ImageColor.colormap['black'])
     text = 'по теме: '
     draw.text((5, 175), text, font=font, fill=ImageColor.colormap['black'])
     text = 'в объеме:'
