@@ -1,4 +1,5 @@
 # utf-8
+import io
 import os
 import sqlite3
 from FDataBase import FDataBase
@@ -68,8 +69,10 @@ def open_fon():
     # image_teplate.show()
     # перейти в директорию для сохранения файла
     os.chdir(path_file)
-    file = image_template.save(file)
-    # TODO нужно вернуть - expected str, bytes or os.PathLike object, not PngImageFile
+    image_template.save(file)
+    file = image_to_byte_array(image_template)
+
+    # file = image_template.save(file)
 
     # TODO стандартизировать размер изображения!! на А5
     print(type(file))
@@ -80,15 +83,21 @@ def read_names_courses():
     pass
 
 
+def image_to_byte_array(image: Image) -> bytes:
+  imgByteArr = io.BytesIO()
+  image.save(imgByteArr, format=image.format)
+  imgByteArr = imgByteArr.getvalue()
+  return imgByteArr
+
+
 def save_in_subd(file_sert):
     db = connect_db()
     dbase = FDataBase(db)
     data_file = {}
-    file_convert = convert_blob(file_sert)  # TODO нужно сконвертировать в  бинарный файл
+    # file_convert = convert_blob(file_sert)  # TODO нужно сконвертировать в  бинарный файл
     data_file['theme'] = 'Охрана труда'
-    data_file['template_sertificat'] = file_convert
+    data_file['template_sertificat'] = file_sert
     data_file['name_template_sertificat'] = 'sertificat.png'
-
     dbase.create_template_sert(data_file)
     # dbase.save_insubd(file)
 
@@ -109,3 +118,4 @@ def connect_db():
 if __name__ == '__main__':
     file_sert = open_fon()
     save_in_subd(file_sert)
+

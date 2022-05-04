@@ -328,15 +328,14 @@ class FDataBase:
 
 
     def create_template_sert(self, data):
-        print('data', data)
-        # prot = data['template_protocol']
-        sert = data['template_sertificat']   # TODO BLOB?
+        sert = data['template_sertificat']
         name_file = data['name_template_sertificat']
-        theme_in = data['theme']
-        val = (name_file, sert, theme_in)  # prot
+        theme_in = 1 # data['theme']
+        val = (sert, name_file, theme_in)
         try:
-            sqlite_update = ('Update courses  template_sertificat=?, name_template_sertificat=?, where theme = ?')
+            sqlite_update = f'UPDATE courses SET template_sertificat=?, name_template_sertificat=? where theme=?'
             self.__cur.execute(sqlite_update, val)
+            self.__db.commit()
             return
         except sqlite3.Error as e:
             print("Ошибка создания шаблона сертификата в БД (create_template_sert) " + str(e))
@@ -350,6 +349,7 @@ class FDataBase:
 
         try:
             self.__cur.execute('INSERT OR IGNORE INTO courses VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)', values)
+            self.__db.commit()
             return
         except sqlite3.Error as e:
             print("Ошибка создания шаблона сертификата в БД (create_template_sert) " + str(e))
