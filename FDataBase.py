@@ -17,7 +17,6 @@ class FDataBase:
         self.n_qestion = 5
         self.list_answer_just = []
 
-
     def getCourse(self):
         try:
             self.__cur.execute(f"SELECT id_course, theme, edu_materials, edu_other, edu_additional FROM courses")
@@ -28,7 +27,6 @@ class FDataBase:
             print("Ошибка получения курса из БД " + str(e))
         return False
 
-
     def read_for_sert(self):
         try:
             self.__cur.execute(f"SELECT theme, course_hourses FROM courses")
@@ -38,7 +36,6 @@ class FDataBase:
         except sqlite3.Error as e:
             print("Ошибка получения курса из БД " + str(e))
         return False
-
 
     def getStatus_name(self, user_id):
         try:
@@ -53,7 +50,6 @@ class FDataBase:
         except sqlite3.Error as e:
             print("Ошибка получения статуса имени " + str(e))
         return False
-
 
     def getStatus_exzam(self, user_id):
         try:
@@ -72,7 +68,6 @@ class FDataBase:
             print("Ошибка получения статуса экзамена " + str(e))
         return False
 
-
     def insertStatus_exzam(self, user_id):
         try:
             user_id = user_id
@@ -87,7 +82,6 @@ class FDataBase:
             print("Ошибка записи начального статуса экзамена " + str(e))
         return
 
-
     def getProfile(self, user_id):
         try:
             select_data = ('name', 'firstname', 'lastname', 'dateborn', 'name_organization', 'position', 'email')
@@ -99,7 +93,6 @@ class FDataBase:
             print("Ошибка получения данных профиля" + str(e))
         return False
 
-
     def getCourseEdu(self, id_course):
         try:
             self.__cur.execute(f"SELECT edu_materials, edu_other, edu_additional FROM courses WHERE id_course={id_course}")
@@ -109,7 +102,6 @@ class FDataBase:
         except sqlite3.Error as e:
             print("Ошибка получения курса из БД(getCourseEdu) " + str(e))
         return
-
 
     def getUser(self, user_id):
         try:
@@ -123,7 +115,6 @@ class FDataBase:
             print("Ошибка получения данных из БД(getUser) " + str(e))
         return False
 
-
     def read_organization(self):
         try:
             self.__cur.execute("SELECT * FROM organization_com")
@@ -136,7 +127,6 @@ class FDataBase:
             print("Ошибка получения данных из БД(organization) " + str(e))
         return
 
-
     def save_protocol_N(self, data):
         try:
             protocol_N = data['protocol_N'] + 1
@@ -146,7 +136,7 @@ class FDataBase:
             self.__cur.execute("UPDATE organization_com SET protocol_N=?, number_sert=? WHERE id_org=?", up_date)
         except sqlite3.Error as e:
             print("Ошибка записи данных в БД(protocol_N) " + str(e))
-
+        return
 
     def save_sertificat(self, user_id, theme, sertificate, name_sert):
         try:
@@ -157,13 +147,11 @@ class FDataBase:
             print("Ошибка записи данных в БД(save_sertificat) " + str(e))
         return
 
-
     def check_exist(self, user_id):
         self.__cur.execute(f"SELECT * FROM docs where id = {user_id}")
         res = self.__cur.fetchone()
         return res
         # -- Вернёт true, если какие - то записи  по  запросу  находятся
-
 
     def read_sertificat(self, user_id):
         try:
@@ -177,7 +165,6 @@ class FDataBase:
             print("Ошибка получения данных из БД(read_sertificat) " + str(e))
         return
 
-
     def getUserByEmail(self, email):
         try:
             self.__cur.execute(f"SELECT * FROM users WHERE email = '{email}' LIMIT 1")
@@ -189,7 +176,6 @@ class FDataBase:
         except sqlite3.Error as e:
             print("Ошибка получения данных из БД(getUserByEmail) " + str(e))
         return False
-
 
     def getUserByName(self, name):
         try:
@@ -203,7 +189,6 @@ class FDataBase:
             print("Ошибка получения данных из БД(getUserByName) " + str(e))
         return False
 
-
     def read_list_just(self, user_id):
         try:
             self.__cur.execute(f"SELECT laj, llu FROM a_just WHERE id = {user_id} ")
@@ -215,7 +200,6 @@ class FDataBase:
         except sqlite3.Error as e:
             print("Ошибка получения данных из БД(read_list_just) " + str(e))
 
-
     def save_status_user(self, user_id, data):  # обновление статуса экзамена в БД
         theme = data['theme']
         status_course = data['status']
@@ -226,7 +210,6 @@ class FDataBase:
         self.__cur.execute(f"UPDATE exzam_rezult SET theme=?, status_exzam=?, count_prob=?, data_exzam=? WHERE id = {user_id}", up_date)
         self.__db.commit()
         return
-
 
     def read_count_prob(self, user_id):
         try:
@@ -240,14 +223,12 @@ class FDataBase:
         except sqlite3.Error as e:
             print("Ошибка получения данных из БД(read_count_prob) " + str(e))
 
-
     def save_count_prob(self, user_id, data):  # обновление результатов экзамена в БД
         count_prob = data['count_prob']
         id = data['user_id']
         up_date = (count_prob, id)
         self.__cur.execute(f"UPDATE exzam_rezult SET count_prob = ? WHERE id = {id}", up_date)
         return
-
 
     def update_profile(self, user_id, profile_data):
         self.profile_data = profile_data
@@ -269,7 +250,6 @@ class FDataBase:
             return
         except sqlite3.Error as e:
             print("Ошибка получения данных из БД(update_profile) " + str(e))
-
 
     def read_test(self, path):
         list_label_use = []
@@ -302,7 +282,6 @@ class FDataBase:
             print("Ошибка получения вопросов из БД(read_test) " + str(e))
         return self.rez_dict, self.list_answer_just, list_label_use
 
-
     def save_(self, user_id, list_answer_just, list_label_use):
         try:
             laj = str(list_answer_just)
@@ -312,7 +291,6 @@ class FDataBase:
         except sqlite3.Error as e:
             print("Ошибка записи данных в БД(save_list_just) " + str(e))
         return
-
 
     def theme_for_sert(self, user_id):
         try:
@@ -326,11 +304,10 @@ class FDataBase:
             print("Ошибка чтения данных из БД(theme_for_sert) " + str(e))
         return
 
-
     def create_template_sert(self, data):
         sert = data['template_sertificat']
         name_file = data['name_template_sertificat']
-        theme_in = 1 # data['theme']
+        theme_in = 1  # data['theme']
         val = (sert, name_file, theme_in)
         try:
             sqlite_update = f'UPDATE courses SET template_sertificat=?, name_template_sertificat=? where theme=?'
@@ -339,7 +316,6 @@ class FDataBase:
             return
         except sqlite3.Error as e:
             print("Ошибка создания шаблона сертификата в БД (create_template_sert) " + str(e))
-
 
     def create_course(self, data):
         values = data['theme'], data['edu_materials'], data['edu_other'], data['edu_additional'], \
@@ -353,7 +329,6 @@ class FDataBase:
             return
         except sqlite3.Error as e:
             print("Ошибка создания шаблона сертификата в БД (create_template_sert) " + str(e))
-
 
     def read_templates(self, id_course):
         try:

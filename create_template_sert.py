@@ -84,10 +84,10 @@ def read_names_courses():
 
 
 def image_to_byte_array(image: Image) -> bytes:
-  imgByteArr = io.BytesIO()
-  image.save(imgByteArr, format=image.format)
-  imgByteArr = imgByteArr.getvalue()
-  return imgByteArr
+    imgByteArr = io.BytesIO()
+    image.save(imgByteArr, format=image.format)
+    imgByteArr = imgByteArr.getvalue()
+    return imgByteArr
 
 
 def save_in_subd(file_sert):
