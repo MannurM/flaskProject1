@@ -7,9 +7,9 @@ from PIL import Image, ImageDraw, ImageColor, ImageFont
 
 
 # конфигурация
-DATABASE = 'pr_ot.db'
-DEBUG = True
-SECRET_KEY = 'fdgfh78@#5?>gfhf89dx,v06k'
+# DATABASE = 'pr_ot.db'
+# DEBUG = True
+# SECRET_KEY = 'fdgfh78@#5?>gfhf89dx,v06k'
 
 #  скачать файл фона от организатора
 #  скачать названия полей - наименование организации, должность, подпись,  тема  и другие
@@ -22,7 +22,6 @@ def open_fon():
     path_template = os.path.normpath(os.getcwd() + '/' + 'images/templ.png')
     image_template = Image.open(path_template)
     draw = ImageDraw.Draw(image_template)
-    print(path_template)
     font = ImageFont.truetype(font_path, size=14)
     text = 'УДОСТОВЕРЕНИЕ'
     draw.text((130, 5), text, font=font, fill=ImageColor.colormap['black'])
@@ -61,21 +60,15 @@ def open_fon():
     draw.text((5, 255), text, font=font, fill=ImageColor.colormap['black'])
     text = 'Дата'
     draw.text((5, 285), text, font=font, fill=ImageColor.colormap['black'])
-    # draw.text((286, 259), date, font=font, fill=ImageColor.colormap['black'])  # время
 
     file = 'template_sert.png'
-    # Изменить путь сохранения  изображения
-    path_file = os.path.normpath(os.getcwd() + '/' + 'static/templates_sert/')
-    # image_teplate.show()
-    # перейти в директорию для сохранения файла
-    os.chdir(path_file)
+    # # Изменить путь сохранения  изображения
+    # path_file = os.path.normpath(os.getcwd() + '/' + 'static/templates_sert/')
+    # # image_teplate.show()
+    # # перейти в директорию для сохранения файла
+    # os.chdir(path_file)
     image_template.save(file)
     file = image_to_byte_array(image_template)
-
-    # file = image_template.save(file)
-
-    # TODO стандартизировать размер изображения!! на А5
-    print(type(file))
     return file
 
 
@@ -91,19 +84,19 @@ def image_to_byte_array(image: Image) -> bytes:
 
 
 def save_in_subd(file_sert):
-    db = connect_db()
-    dbase = FDataBase(db)
     data_file = {}
-    # file_convert = convert_blob(file_sert)  # TODO нужно сконвертировать в  бинарный файл
     data_file['theme'] = 'Охрана труда'
     data_file['template_sertificat'] = file_sert
     data_file['name_template_sertificat'] = 'sertificat.png'
+    # path = "C:\\Users\\ZMan\\PycharmProjects\\flaskProject1"
+    # os.chdir(path)
+    db = connect_db()
+    dbase = FDataBase(db)
     dbase.create_template_sert(data_file)
-    # dbase.save_insubd(file)
+    return
 
 
 def convert_blob(file):
-    print(type(file), file)
     with open(file, 'rb') as f:
         file_blob = f.read()
         return file_blob
@@ -118,4 +111,5 @@ def connect_db():
 if __name__ == '__main__':
     file_sert = open_fon()
     save_in_subd(file_sert)
+
 

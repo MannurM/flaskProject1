@@ -194,13 +194,12 @@ def check_profile(user_id):
 def sertification(user_id): #   протокол и удостоверение созданы и записаны в БД
     print('sertification')
     data_sert = create_user_sert.create_sert(user_id)
-    sertificat_file = create_user_sert.past_in_templates(data_sert)
+    sertificat_file = create_user_sert.past_in_templates_sertificat(data_sert)
     # data_sert = modules.create_sert(user_id=user_id)
     # print('sertification_2')
-    theme = 'ОТ'
-    name_sert = 'сертификат'
 
-    modules.save_sertificat(user_id, theme, sertificat_file, name_sert)
+
+    # modules.save_sertificat(user_id, theme, sertificat_file, name_sert)
     return redirect(url_for('courses', user_id=user_id))
 
 

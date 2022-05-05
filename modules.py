@@ -170,55 +170,53 @@ def check_save_profile(user_id, save_profile, profile_data):
 
 
 # Распаковка файла протокола или сертификата из БД
-def convert_from_binary_data(filename, blob_data):
-    # TODO 1. передать в функцию имя файла и бинарный файл,
-    # TODO 2. сразу бинарный файл и  название файла в БД (название файла удостоверения иил протокола сохранить в БД)
-    # TODO 3. открыть файл с навазнием из БД, закачать бинарные данные данные , закрыть файл, вернуть файл из конвертера
-    name_file = filename
-    b_file = io.BytesIO(blob_data)
-    # TODO при открытии файла -  файл сохраняется в корневом каталоге в нужном docx формате. как оставить его в памяти
-    # TODO и перенести в к пользователю
-    with open(name_file, 'wb') as file:
-        name_file = file.write(blob_data)
-    b_file.close()
-
-
-    return name_file
+# def convert_from_binary_data(filename, blob_data):
+#     # TODO 1. передать в функцию имя файла и бинарный файл,
+#     # TODO 2. сразу бинарный файл и  название файла в БД (название файла удостоверения иил протокола сохранить в БД)
+#     # TODO 3. открыть файл с навазнием из БД, закачать бинарные данные данные , закрыть файл, вернуть файл из конвертера
+#     name_file = filename
+#     b_file = io.BytesIO(blob_data)
+#     # TODO при открытии файла -  файл сохраняется в корневом каталоге в нужном docx формате. как оставить его в памяти
+#     # TODO и перенести в к пользователю
+#     with open(name_file, 'wb') as file:
+#         name_file = file.write(blob_data)
+#     b_file.close()
+#     return name_file
 
 
 # Конвертирование файла для записи в БД
-def convert_path(prot, sert):
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        prot = f'{tmpdirname}\_{prot}'
-        with open(prot, 'rb') as doc:
-            blob_data_prot = doc.read()
-        sert = f'{tmpdirname}\_{sert}'
-        with open(sert, 'rb') as doc:
-            blob_data_sert = doc.read()
-        return blob_data_prot, blob_data_sert
+# def convert_path(prot, sert):
+#     with tempfile.TemporaryDirectory() as tmpdirname:
+#         prot = f'{tmpdirname}\_{prot}'
+#         with open(prot, 'rb') as doc:
+#             blob_data_prot = doc.read()
+#         sert = f'{tmpdirname}\_{sert}'
+#         with open(sert, 'rb') as doc:
+#             blob_data_sert = doc.read()
+#         return blob_data_prot, blob_data_sert
 
 
 # Создание Сертификата и протокола
-def create_sert(user_id):
-    theme, count_prob, status_exzam, data_exzam = dbase.getStatus_exzam(user_id=user_id)
-    theme2, course_hourses = dbase.read_for_sert()
-    data_org = dbase.read_organization()
-    name, firstname, lastname, dateborn, name_suborganization, position, email = dbase.getProfile(user_id=user_id)
-    print('read_DB!')
-    data_sert={}
-    for key in data_org.keys():
-        data_sert[key] = data_org[key]
-    data_sert['name'] = name
-    data_sert['firstname'] = firstname
-    data_sert['lastname'] = lastname
-    data_sert['dateborn'] = dateborn
-    data_sert['name_suborganization'] = name_suborganization
-    data_sert['position'] = position
-    data_sert['data_exzam'] = data_exzam
-    data_sert['status_exzam'] = status_exzam
-    data_sert['theme'] = theme
-    data_sert['course_hourses'] = course_hourses
-    return data_sert
+# def create_sert(user_id):
+#     theme, count_prob, status_exzam, data_exzam = dbase.getStatus_exzam(user_id=user_id)
+#     theme2, course_hourses = dbase.read_for_sert()
+#     data_org = dbase.read_organization()
+#     name, firstname, lastname, dateborn, name_suborganization, position, email = dbase.getProfile(user_id=user_id)
+#     print('read_DB!')
+#     data_sert={}
+#     for key in data_org.keys():
+#         data_sert[key] = data_org[key]
+#     data_sert['name'] = name
+#     data_sert['firstname'] = firstname
+#     data_sert['lastname'] = lastname
+#     data_sert['dateborn'] = dateborn
+#     data_sert['name_suborganization'] = name_suborganization
+#     data_sert['position'] = position
+#     data_sert['data_exzam'] = data_exzam
+#     data_sert['status_exzam'] = status_exzam
+#     data_sert['theme'] = theme
+#     data_sert['course_hourses'] = course_hourses
+#     return data_sert
     # name_sert, sert_doc = convert_sert(data_sert) # TODO заменить модуль создания  сертификата
     # name_protocol, prot_doc = convert_protocol(data_sert)
     # print("convert sert_prot!")
@@ -280,10 +278,10 @@ def getprofile(user_id):
     return profile_data
 
 
-# Запись в БД созданного сертификата
-def save_sertificat(user_id, theme, blob_sertificate, name_sert):
-    dbase.save_sertificat(user_id, theme, blob_sertificate, name_sert)
-    return
+# # Запись в БД созданного сертификата
+# def save_sertificat(user_id, theme, blob_sertificate, name_sert):
+#     dbase.save_sertificat(user_id, theme, blob_sertificate, name_sert)
+#     return
 
 
 # Запись курса в БД
@@ -306,12 +304,12 @@ def create_course(data):
     return
 
 
-# чтение из БД,  конвертация в первоначальный формат
-def read_course(id_course):
-    prot, sert, name_prot, name_sert = dbase.read_templates(id_course=id_course)
-    with open(name_prot,'wb') as f:
-        protocol = f.write(prot)
-    with open(name_sert,'wb') as f:
-        sertificat = f.write(sert)
-    return protocol, sertificat
+# # чтение из БД,  конвертация в первоначальный формат
+# def read_course(id_course):
+#     prot, sert, name_prot, name_sert = dbase.read_templates(id_course=id_course)
+#     with open(name_prot,'wb') as f:
+#         protocol = f.write(prot)
+#     with open(name_sert,'wb') as f:
+#         sertificat = f.write(sert)
+#     return protocol, sertificat
 

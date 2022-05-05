@@ -28,8 +28,10 @@ class FDataBase:
         return False
 
     def read_for_sert(self):
+        val = 'theme, course_hourses, template_sertificat, template_protocol, ' \
+              'name_template_sertificat, name_template_protocol'
         try:
-            self.__cur.execute(f"SELECT theme, course_hourses FROM courses")
+            self.__cur.execute(f"SELECT {val} FROM courses")
             res = self.__cur.fetchone()
             if res:
                 return res
@@ -304,18 +306,33 @@ class FDataBase:
             print("Ошибка чтения данных из БД(theme_for_sert) " + str(e))
         return
 
+    def create_template_prot(self, data):
+        sert = data['template_protocol']
+        name_file = data['name_template_protocol']
+        theme_in = data['theme']
+        val = (sert, name_file, theme_in)
+        try:
+            sqlite_update = 'UPDATE courses SET template_protocol=?, name_template_protocol=? where theme=?'
+            self.__cur.execute(sqlite_update, val)
+            self.__db.commit()
+        except sqlite3.Error as e:
+            print("Ошибка создания шаблона сертификата в БД (create_template_sert) " + str(e))
+        finally:
+            return
+
     def create_template_sert(self, data):
         sert = data['template_sertificat']
         name_file = data['name_template_sertificat']
-        theme_in = 1  # data['theme']
+        theme_in = data['theme']
         val = (sert, name_file, theme_in)
         try:
-            sqlite_update = f'UPDATE courses SET template_sertificat=?, name_template_sertificat=? where theme=?'
+            sqlite_update = 'UPDATE courses SET template_sertificat=?, name_template_sertificat=? where theme=?'
             self.__cur.execute(sqlite_update, val)
             self.__db.commit()
-            return
         except sqlite3.Error as e:
             print("Ошибка создания шаблона сертификата в БД (create_template_sert) " + str(e))
+        finally:
+            return
 
     def create_course(self, data):
         values = data['theme'], data['edu_materials'], data['edu_other'], data['edu_additional'], \
