@@ -31,7 +31,7 @@ def past_in_templates_sertificat(data_sert):
             fill = dict_label_user[label]['fill']
             draw.text(coordinat, text, font=font, fill=fill)
     image_user.show(10)
-    return
+    return image_user
 
 def past_in_templates_protocol(data_sert):
     file_sert = data_sert['template_protocol']

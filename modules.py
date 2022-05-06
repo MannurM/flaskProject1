@@ -106,7 +106,7 @@ def status_user(user_id):
         id, theme_1, protocol, sertificate, name_protocol, name_sert = dbase.read_sertificat(user_id)
         data_status['sert'] = 1 # todo ПОЧЕМУ ОДИН?
 
-        # TODO data['protocol'], data['sertificate'] - это ссылки на файлы в БД
+        # TODO data['protocol'], data['sertificat'] - это ссылки на файлы в БД
         # TODO проверка  рендерится - если скачать сертификат, то запускается скрипт
         # ToDO скрипт - Передается user_id, theme_1. Формируется запрос в БД. ОТвет конвертируется в docx.
         # TODO Ответ формируется во временной памяти. Открывается новая страница браузера с параметром download.
@@ -117,10 +117,10 @@ def status_user(user_id):
         # protocol = convert_from_binary_data(filename, blob_data)
         # data_status['protocol'] = protocol
 
-        blob_data = sertificate
-        filename = name_sert
-        sertificate = convert_from_binary_data(filename, blob_data)
-        data_status['sertificate'] = sertificate
+        # blob_data = sertificate
+        # filename = name_sert
+        # sertificate = convert_from_binary_data(filename, blob_data)
+        # data_status['sertificate'] = sertificate
     return data_status
 
 
@@ -169,69 +169,24 @@ def check_save_profile(user_id, save_profile, profile_data):
     return profile_data
 
 
-# Распаковка файла протокола или сертификата из БД
-# def convert_from_binary_data(filename, blob_data):
-#     # TODO 1. передать в функцию имя файла и бинарный файл,
-#     # TODO 2. сразу бинарный файл и  название файла в БД (название файла удостоверения иил протокола сохранить в БД)
-#     # TODO 3. открыть файл с навазнием из БД, закачать бинарные данные данные , закрыть файл, вернуть файл из конвертера
-#     name_file = filename
-#     b_file = io.BytesIO(blob_data)
-#     # TODO при открытии файла -  файл сохраняется в корневом каталоге в нужном docx формате. как оставить его в памяти
-#     # TODO и перенести в к пользователю
-#     with open(name_file, 'wb') as file:
-#         name_file = file.write(blob_data)
-#     b_file.close()
-#     return name_file
-
-
-# Конвертирование файла для записи в БД
-# def convert_path(prot, sert):
-#     with tempfile.TemporaryDirectory() as tmpdirname:
-#         prot = f'{tmpdirname}\_{prot}'
-#         with open(prot, 'rb') as doc:
-#             blob_data_prot = doc.read()
-#         sert = f'{tmpdirname}\_{sert}'
-#         with open(sert, 'rb') as doc:
-#             blob_data_sert = doc.read()
-#         return blob_data_prot, blob_data_sert
 
 
 # Создание Сертификата и протокола
-# def create_sert(user_id):
-#     theme, count_prob, status_exzam, data_exzam = dbase.getStatus_exzam(user_id=user_id)
-#     theme2, course_hourses = dbase.read_for_sert()
-#     data_org = dbase.read_organization()
-#     name, firstname, lastname, dateborn, name_suborganization, position, email = dbase.getProfile(user_id=user_id)
-#     print('read_DB!')
-#     data_sert={}
-#     for key in data_org.keys():
-#         data_sert[key] = data_org[key]
-#     data_sert['name'] = name
-#     data_sert['firstname'] = firstname
-#     data_sert['lastname'] = lastname
-#     data_sert['dateborn'] = dateborn
-#     data_sert['name_suborganization'] = name_suborganization
-#     data_sert['position'] = position
-#     data_sert['data_exzam'] = data_exzam
-#     data_sert['status_exzam'] = status_exzam
-#     data_sert['theme'] = theme
-#     data_sert['course_hourses'] = course_hourses
-#     return data_sert
-    # name_sert, sert_doc = convert_sert(data_sert) # TODO заменить модуль создания  сертификата
-    # name_protocol, prot_doc = convert_protocol(data_sert)
-    # print("convert sert_prot!")
-    # # Сохранить следующий номер протокола и сертификата в БД
-    # data_save = {}
-    # data_save['protocol_N'] = data_org['protocol_N']
-    # data_save['number_sert'] = data_org['number_sert']
-    # data_save['id_org'] = data_org['id_org']
-    # dbase.save_protocol_N(data_save)
-    #
-    # blob_sertificate = sert_doc
-    # blob_protocol = prot_doc
-    # print('theme2, blob_sertificate, blob_protocol, name_protocol, name_sert',
-    #       theme2, blob_sertificate, blob_protocol, name_protocol, name_sert)
-    # return theme2, blob_sertificate, blob_protocol, name_protocol, name_sert
+def create_name_sert_and_protocol(user_id):
+    name, first_name, last_name, dateborn, name_organization, position, email = dbase.getProfile(user_id)
+    id, theme, protocol, sertificate, name_protocol, name_sert = dbase.read_sertificat(user_id)
+    name_sert = name + '_' + first_name + '_' + last_name + '_' + name_sert
+    name_protocol =  name + '_' + first_name + '_' + last_name + '_' + name_protocol
+    print("names protocol and sertificat!")
+    # Сохранить следующий номер протокола и сертификата в БД
+    data_org = dbase.read_organization()
+    data_save = {}
+    data_save['protocol_N'] = data_org['protocol_N']
+    data_save['number_sert'] = data_org['number_sert']
+    data_save['id_org'] = data_org['id_org']
+    dbase.save_protocol_N(data_save)
+
+    return name_protocol, name_sert
 
 
 # Извлечение из БД учебных материалов по курсу
@@ -278,10 +233,10 @@ def getprofile(user_id):
     return profile_data
 
 
-# # Запись в БД созданного сертификата
-# def save_sertificat(user_id, theme, blob_sertificate, name_sert):
-#     dbase.save_sertificat(user_id, theme, blob_sertificate, name_sert)
-#     return
+# Запись в БД созданного сертификата и протокола
+def save_sertificat(user_id, theme, blob_protocol, blob_sertificate, name_protocol, name_sert):
+    dbase.save_sertificat(user_id, theme, blob_protocol, blob_sertificate,name_protocol, name_sert)
+    return
 
 
 # Запись курса в БД
@@ -312,4 +267,31 @@ def create_course(data):
 #     with open(name_sert,'wb') as f:
 #         sertificat = f.write(sert)
 #     return protocol, sertificat
+
+
+# Распаковка файла протокола или сертификата из БД
+# def convert_from_binary_data(filename, blob_data):
+#     # TODO 1. передать в функцию имя файла и бинарный файл,
+#     # TODO 2. сразу бинарный файл и  название файла в БД (название файла удостоверения иил протокола сохранить в БД)
+#     # TODO 3. открыть файл с навазнием из БД, закачать бинарные данные данные , закрыть файл, вернуть файл из конвертера
+#     name_file = filename
+#     b_file = io.BytesIO(blob_data)
+#     # TODO при открытии файла -  файл сохраняется в корневом каталоге в нужном docx формате. как оставить его в памяти
+#     # TODO и перенести в к пользователю
+#     with open(name_file, 'wb') as file:
+#         name_file = file.write(blob_data)
+#     b_file.close()
+#     return name_file
+
+
+# Конвертирование файла для записи в БД
+# def convert_path(prot, sert):
+#     with tempfile.TemporaryDirectory() as tmpdirname:
+#         prot = f'{tmpdirname}\_{prot}'
+#         with open(prot, 'rb') as doc:
+#             blob_data_prot = doc.read()
+#         sert = f'{tmpdirname}\_{sert}'
+#         with open(sert, 'rb') as doc:
+#             blob_data_sert = doc.read()
+#         return blob_data_prot, blob_data_sert
 

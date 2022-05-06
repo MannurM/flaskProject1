@@ -140,9 +140,9 @@ class FDataBase:
             print("Ошибка записи данных в БД(protocol_N) " + str(e))
         return
 
-    def save_sertificat(self, user_id, theme, sertificate, name_sert):
+    def save_sertificat(self, user_id, theme, protocol, sertificate,name_protocol, name_sert):
         try:
-            values = (user_id, theme, 0, sertificate, 0, name_sert)
+            values = (user_id, theme, protocol, sertificate, name_protocol, name_sert)
             self.__cur.execute("INSERT OR IGNORE INTO docs VALUES(?,?,?,?,?,?)", values)
             self.__db.commit()
         except sqlite3.Error as e:

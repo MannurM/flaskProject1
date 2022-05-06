@@ -131,7 +131,7 @@ def eduexz_rezult(user_id):
     data['all_answer'] = list_label_use  # список номеров вопросов
     data['just_answer'] = list_answer_just
     if data['sum_just'] >= 3:
-        data['status'] = 'Сдано'
+        data['status'] = 'Сдал'
     # if count_prob in [None, 0, 1, 2]:
     #     count_prob += 1
     # else:
@@ -180,11 +180,6 @@ def check_profile(user_id):
         new_profile_data = modules.check_save_profile(user_id, save_profile, profile_data)
         profile_data = new_profile_data
         modules.update_profile(user_id, new_profile_data)
-
-        # создать удостоверение и протокол в docx, конвертировать в ПДФ или JPEG?
-        # TODO для организатора оставить возможность скачать удостоверения в докс
-        # Записать протокол и удостоверение в БД
-
         return redirect(url_for("sertification", user_id=user_id))
     return render_template('check_profile.html', data=data, profile_data=profile_data)
 
@@ -193,13 +188,13 @@ def check_profile(user_id):
 @login_required
 def sertification(user_id): #   протокол и удостоверение созданы и записаны в БД
     print('sertification')
+    # TODO Создать изображения сертификатов
     data_sert = create_user_sert.create_sert(user_id)
     sertificat_file = create_user_sert.past_in_templates_sertificat(data_sert)
-    # data_sert = modules.create_sert(user_id=user_id)
-    # print('sertification_2')
+    protocol_file = create_user_sert.past_in_templates_protocol(data_sert)
+    theme, name_protocol, name_sert = modules.create_name_sert_and_protocol(user_id)
 
-
-    # modules.save_sertificat(user_id, theme, sertificat_file, name_sert)
+    modules.save_sertificat(user_id, theme, protocol_file, sertificat_file, name_protocol, name_sert)
     return redirect(url_for('courses', user_id=user_id))
 
 
