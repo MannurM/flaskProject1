@@ -23,18 +23,18 @@
                 <div class="col-md-4 themed-grid-col">
                     <p>Курс - {{data.theme}}</p>
                     <p>Статус - {{ data.status }} </p>
-                {% if data.sert  %}
+                {% if data.sertificat  %}
                     {% block sert %}
 {#                        <form action="{{url_for('courses')}}" method="post" class="needs-validation" novalidate>#}
-                        {#    Form для запроса. data.sertificate - это ссылка на бд           #}
-                        <p><a href="" download="{{ data.sertificat }}"> Скачать удостоверение </a></p>
-                        {% set down = data.protocol %}
-                        <p><a href="" download="{{ data.protocol }}" > Скачать  протокол {{ down }} </a></p>
+                        {#    Form для запроса. data.sertificate - это ссылка на бд  #}
+                        <p><a href={{ url_for('download', user_id=data.user_id) }}" download={{ data.sertificat }}>Скачать удостоверение </a></p>
+                        {% set down = data.protocol %} {# {{ down }} #}
+                        <p><a  download={{ data.name_protocol }} > Скачать  протокол  </a></p>
 {#                        </form>#}
                     {% endblock %}
                 {% else %}
                     {% block sert_create %}
-                    <a href="{{ url_for('check_profile', user_id=data.user_id) }}"> Создать удостоверение и протокол </a>
+                    <a href={{ url_for('check_profile', user_id=data.user_id) }}> Создать удостоверение и протокол </a>
                     {% endblock %}
                 {% endif %}
             {% else %}

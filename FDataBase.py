@@ -28,7 +28,7 @@ class FDataBase:
         return False
 
     def read_for_sert(self):
-        val = 'theme, course_hourses, template_sertificat, template_protocol, ' \
+        val = 'id_course, theme, course_hourses, template_sertificat, template_protocol, ' \
               'name_template_sertificat, name_template_protocol'
         try:
             self.__cur.execute(f"SELECT {val} FROM courses")
@@ -52,6 +52,7 @@ class FDataBase:
         except sqlite3.Error as e:
             print("Ошибка получения статуса имени " + str(e))
         return False
+
 
     def getStatus_exzam(self, user_id):
         try:
@@ -140,7 +141,7 @@ class FDataBase:
             print("Ошибка записи данных в БД(protocol_N) " + str(e))
         return
 
-    def save_sertificat(self, user_id, theme, protocol, sertificate,name_protocol, name_sert):
+    def save_sertificat(self, user_id, theme, protocol, sertificate, name_protocol, name_sert):
         try:
             values = (user_id, theme, protocol, sertificate, name_protocol, name_sert)
             self.__cur.execute("INSERT OR IGNORE INTO docs VALUES(?,?,?,?,?,?)", values)
@@ -161,7 +162,7 @@ class FDataBase:
             res = self.__cur.fetchone()
             if not res:
                 print("Ошибка нет данных в БД")
-                return None, None, None, None
+                return None, None, None, None, None, None
             return res
         except sqlite3.Error as e:
             print("Ошибка получения данных из БД(read_sertificat) " + str(e))
@@ -348,13 +349,25 @@ class FDataBase:
             print("Ошибка создания шаблона сертификата в БД (create_template_sert) " + str(e))
 
     def read_templates(self, id_course):
+        value = 'theme, template_protocol, template_sertificat, name_template_protocol, name_template_sertificat'
         try:
-            self.__cur.execute(f"SELECT template_protocol, template_sertificat, name_template_protocol, name_template_sertificat FROM courses WHERE id_course={id_course}")
+            self.__cur.execute(f"SELECT {value}  FROM courses WHERE id_course={id_course}")
             res = self.__cur.fetchone()
             if res:
                 return res
         except sqlite3.Error as e:
-            print("Ошибка получения курса из БД(read_teplates) " + str(e))
+            print("Ошибка получения курса из БД(read_templates) " + str(e))
+        return
+
+    def read_templates_names(self, id_course):
+        value = 'theme, name_template_protocol, name_template_sertificat'
+        try:
+            self.__cur.execute(f"SELECT {value}  FROM courses WHERE id_course={id_course}")
+            res = self.__cur.fetchone()
+            if res:
+                return res
+        except sqlite3.Error as e:
+            print("Ошибка получения курса из БД(read_templates) " + str(e))
         return
 
     def save_insubd(self, file):

@@ -44,6 +44,13 @@ def courses(user_id):
     return render_template('courses.html', data=data)
 
 
+@app.route('/courses/download/<user_id>')
+@login_required
+def download(user_id):
+    data = modules.status_user_sertificat(user_id)
+    return render_template(courses.html, data=data)
+
+
 @app.route('/edu_mat/<user_id>')
 @login_required
 def edu_mat(user_id):
@@ -188,12 +195,15 @@ def check_profile(user_id):
 @login_required
 def sertification(user_id): #   протокол и удостоверение созданы и записаны в БД
     print('sertification')
-    # TODO Создать изображения сертификатов
+    # Создать изображения сертификатов
     data_sert = create_user_sert.create_sert(user_id)
     sertificat_file = create_user_sert.past_in_templates_sertificat(data_sert)
     protocol_file = create_user_sert.past_in_templates_protocol(data_sert)
-    theme, name_protocol, name_sert = modules.create_name_sert_and_protocol(user_id)
-
+    id_course = data_sert['id_course']
+    theme, name_protocol, name_sert = modules.create_name_sert_and_protocol(user_id, id_course)
+    # print(type(protocol_file), type(sertificat_file))
+    sertificat_file = modules.image_to_byte_array(sertificat_file)
+    protocol_file = modules.image_to_byte_array(protocol_file)
     modules.save_sertificat(user_id, theme, protocol_file, sertificat_file, name_protocol, name_sert)
     return redirect(url_for('courses', user_id=user_id))
 
@@ -221,7 +231,6 @@ def create_course():
         data_course['template_protocol'] = request.form['template_protocol']
         data_course['template_sertificat'] = request.form['template_sertificat']
         data_course['course_hourses'] = request.form['course_hourses']
-
         modules.create_course(data_course)
     return render_template('create_course.html')
 

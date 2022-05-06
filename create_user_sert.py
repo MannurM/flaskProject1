@@ -11,10 +11,12 @@ DATABASE = 'pr_ot.db'
 DEBUG = True
 SECRET_KEY = 'fdgfh78@#5?>gfhf89dx,v06k'
 
+
 def convert_blob(file_sert, file_name):
     with open(file_name, 'wb') as f:
         f.write(file_sert)
         return file_name
+
 
 def past_in_templates_sertificat(data_sert):
     file_sert = data_sert['template_sertificat']
@@ -30,8 +32,9 @@ def past_in_templates_sertificat(data_sert):
             font = dict_label_user[label]['font']
             fill = dict_label_user[label]['fill']
             draw.text(coordinat, text, font=font, fill=fill)
-    image_user.show(10)
+    # image_user.show(10)
     return image_user
+
 
 def past_in_templates_protocol(data_sert):
     file_sert = data_sert['template_protocol']
@@ -47,8 +50,9 @@ def past_in_templates_protocol(data_sert):
             font = dict_label_user[label]['font']
             fill = dict_label_user[label]['fill']
             draw.text(coordinat, text, font=font, fill=fill)
-    image_user.show(10)
-    return
+    # image_user.show(10)
+    return image_user
+
 
 def connect_db():
     conn = sqlite3.connect('pr_ot.db')
@@ -60,7 +64,7 @@ def create_sert(user_id):
     db = connect_db()
     dbase = FDataBase(db)
     theme, count_prob, status_exzam, data_exzam = dbase.getStatus_exzam(user_id=user_id)
-    theme2, course_hourses, template_sertificat, template_protocol, name_template_sertificat, name_template_protocol\
+    id_course, theme2, course_hourses, template_sertificat, template_protocol, name_template_sertificat, name_template_protocol\
         = dbase.read_for_sert()
     data_org = dbase.read_organization()
     name, firstname, lastname, dateborn, name_suborganization, position, email = dbase.getProfile(user_id=user_id)
@@ -68,6 +72,7 @@ def create_sert(user_id):
     data_sert = {}
     for key in data_org.keys():
         data_sert[key] = data_org[key]
+    data_sert['id_course'] = id_course
     data_sert['name_user'] = name
     data_sert['firstname'] = firstname
     data_sert['lastname'] = lastname
@@ -183,6 +188,7 @@ def create_dict_label_user():
             }
     }
     return dict_label_user
+
 
 def create_dict_label_user_prot():
     dict_label_user = {

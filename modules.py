@@ -5,7 +5,7 @@ import tempfile
 import os
 import sqlite3
 
-
+from PIL import Image
 from flask import Flask, g
 from flask_login import LoginManager
 from UserLogin_2 import UserLogin
@@ -103,26 +103,37 @@ def status_user(user_id):
         'sum_just': 0,
         }
     if dbase.check_exist(user_id=user_id):
+        print('1')
         id, theme_1, protocol, sertificate, name_protocol, name_sert = dbase.read_sertificat(user_id)
-        data_status['sert'] = 1 # todo ПОЧЕМУ ОДИН?
-
-        # TODO data['protocol'], data['sertificat'] - это ссылки на файлы в БД
-        # TODO проверка  рендерится - если скачать сертификат, то запускается скрипт
-        # ToDO скрипт - Передается user_id, theme_1. Формируется запрос в БД. ОТвет конвертируется в docx.
-        # TODO Ответ формируется во временной памяти. Открывается новая страница браузера с параметром download.
-        # TODO Предлагается путь для сохранения.
-
-        # blob_data = protocol
-        # filename = name_protocol
-        # protocol = convert_from_binary_data(filename, blob_data)
-        # data_status['protocol'] = protocol
-
-        # blob_data = sertificate
-        # filename = name_sert
-        # sertificate = convert_from_binary_data(filename, blob_data)
-        # data_status['sertificate'] = sertificate
+        protocol = convert_blob(protocol, name_protocol)
+        sertificate = convert_blob(sertificate, name_sert)
+        data_status['protocol'] = protocol
+        data_status['sertificat'] = sertificate
+        data_status['name_protocol'] = name_protocol
+        data_status['name_sert'] = name_sert
+        print('2')
     return data_status
 
+
+def status_user_sertificat(user_id):
+    theme, count_prob, status_exzam, data_exzam = dbase.getStatus_exzam(user_id=user_id)
+    data_status = {
+        'theme': theme,
+        'status': status_exzam,
+        'data_exzam': data_exzam,
+        'user_id': user_id,
+    }
+    if dbase.check_exist(user_id=user_id):
+        print('1')
+        id, theme_1, protocol, sertificate, name_protocol, name_sert = dbase.read_sertificat(user_id)
+        protocol = convert_blob(protocol, name_protocol)
+        sertificate = convert_blob(sertificate, name_sert)
+        data_status['protocol'] = protocol
+        data_status['sertificat'] = sertificate
+        data_status['name_protocol'] = name_protocol
+        data_status['name_sert'] = name_sert
+        print('2')
+    return data_status
 
 # Распаковка теста из БД
 def unpacking_edutest(user_id):
@@ -169,15 +180,15 @@ def check_save_profile(user_id, save_profile, profile_data):
     return profile_data
 
 
-
-
 # Создание Сертификата и протокола
-def create_name_sert_and_protocol(user_id):
+def create_name_sert_and_protocol(user_id,  id_course):
+    theme, name_template_protocol, name_template_sertificat = dbase.read_templates_names(id_course)
     name, first_name, last_name, dateborn, name_organization, position, email = dbase.getProfile(user_id)
-    id, theme, protocol, sertificate, name_protocol, name_sert = dbase.read_sertificat(user_id)
+    name_sert = name_template_sertificat
+    name_protocol = name_template_protocol
     name_sert = name + '_' + first_name + '_' + last_name + '_' + name_sert
-    name_protocol =  name + '_' + first_name + '_' + last_name + '_' + name_protocol
-    print("names protocol and sertificat!")
+    name_protocol = name + '_' + first_name + '_' + last_name + '_' + name_protocol
+    print("names protocol and sertificat!", name_sert, name_protocol )
     # Сохранить следующий номер протокола и сертификата в БД
     data_org = dbase.read_organization()
     data_save = {}
@@ -185,8 +196,7 @@ def create_name_sert_and_protocol(user_id):
     data_save['number_sert'] = data_org['number_sert']
     data_save['id_org'] = data_org['id_org']
     dbase.save_protocol_N(data_save)
-
-    return name_protocol, name_sert
+    return theme, name_protocol, name_sert
 
 
 # Извлечение из БД учебных материалов по курсу
@@ -212,6 +222,7 @@ def update_profile(user_id, new_profile_data):
     dbase.update_profile(user_id, new_profile_data)
     return
 
+
 # Записать статус экзамена
 def save_status_user(user_id, data):
     dbase.save_status_user(user_id=user_id, data=data)
@@ -235,9 +246,23 @@ def getprofile(user_id):
 
 # Запись в БД созданного сертификата и протокола
 def save_sertificat(user_id, theme, blob_protocol, blob_sertificate, name_protocol, name_sert):
-    dbase.save_sertificat(user_id, theme, blob_protocol, blob_sertificate,name_protocol, name_sert)
+    dbase.save_sertificat(user_id, theme, blob_protocol, blob_sertificate, name_protocol, name_sert)
     return
 
+
+# Конвертация изображения в BLOB для БД
+def image_to_byte_array(image: Image) -> bytes:
+    imgByteArr = io.BytesIO()
+    image.save(imgByteArr, format=image.format)
+    imgByteArr = imgByteArr.getvalue()
+    return imgByteArr
+
+
+# Ковертация из БД в изображение
+def convert_blob(file_sert, file_name):
+    with open(file_name, 'wb') as f:
+        f.write(file_sert)
+        return file_name
 
 # Запись курса в БД
 data_course = {}
@@ -271,13 +296,13 @@ def create_course(data):
 
 # Распаковка файла протокола или сертификата из БД
 # def convert_from_binary_data(filename, blob_data):
-#     # TODO 1. передать в функцию имя файла и бинарный файл,
-#     # TODO 2. сразу бинарный файл и  название файла в БД (название файла удостоверения иил протокола сохранить в БД)
-#     # TODO 3. открыть файл с навазнием из БД, закачать бинарные данные данные , закрыть файл, вернуть файл из конвертера
+#     # 1. передать в функцию имя файла и бинарный файл,
+#     # 2. сразу бинарный файл и  название файла в БД (название файла удостоверения иил протокола сохранить в БД)
+#     # 3. открыть файл с навазнием из БД, закачать бинарные данные данные , закрыть файл, вернуть файл из конвертера
 #     name_file = filename
 #     b_file = io.BytesIO(blob_data)
-#     # TODO при открытии файла -  файл сохраняется в корневом каталоге в нужном docx формате. как оставить его в памяти
-#     # TODO и перенести в к пользователю
+#     # при открытии файла -  файл сохраняется в корневом каталоге в нужном docx формате. как оставить его в памяти
+#     # и перенести в к пользователю
 #     with open(name_file, 'wb') as file:
 #         name_file = file.write(blob_data)
 #     b_file.close()
