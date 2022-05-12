@@ -48,6 +48,14 @@ def courses(user_id):
 @login_required
 def download(user_id):
     data = modules.status_user_sertificat(user_id)
+    # TODO Нужна ссылка на уже созданный в головном месте файл
+    # TODO Когда файлы скачиваются с с браузера - они скаиваются в двоичном виде??
+    # TODO при сохранении их нужно конвертировать а не закачивать в браузер в виде файлов.
+    # TODO  барузере файлы находятся в бинарном виде??
+
+    # TODO render_template заменить на вызов файла из папки с загрузками send ...
+    # TODO  на сервере должна быть папка с временными загрузками файлов из БД
+
     return render_template(courses.html, data=data)
 
 
