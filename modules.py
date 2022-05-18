@@ -105,17 +105,41 @@ def status_user(user_id):
     if dbase.check_exist(user_id=user_id):
         print('1')
         id, theme_1, protocol, sertificate, name_protocol, name_sert = dbase.read_sertificat(user_id)
+        # TODO Сохранить файлы протокола и сертификата в папку "Upload_folder"
+        # TODO https://ospanel.io/ - локальный сервер
         protocol = convert_blob(protocol, name_protocol)
         sertificate = convert_blob(sertificate, name_sert)
         data_status['protocol'] = protocol
         data_status['sertificat'] = sertificate
         data_status['name_protocol'] = name_protocol
         data_status['name_sert'] = name_sert
+
         print('2')
     return data_status
 
 
-def status_user_sertificat(user_id):
+# def status_user_sertificat(user_id):
+#     theme, count_prob, status_exzam, data_exzam = dbase.getStatus_exzam(user_id=user_id)
+#     data_status = {
+#         'theme': theme,
+#         'status': status_exzam,
+#         'data_exzam': data_exzam,
+#         'user_id': user_id,
+#     }
+#     if dbase.check_exist(user_id=user_id):
+#         print('1')
+#         id, theme_1, protocol, sertificate, name_protocol, name_sert = dbase.read_sertificat(user_id)
+#         protocol = convert_blob(protocol, name_protocol)
+#         sertificate = convert_blob(sertificate, name_sert)
+#         data_status['protocol'] = protocol
+#         data_status['sertificat'] = sertificate
+#         data_status['name_protocol'] = name_protocol
+#         data_status['name_sert'] = name_sert
+#         print('2')
+#     return data_status
+
+
+def make_tree(user_id):
     theme, count_prob, status_exzam, data_exzam = dbase.getStatus_exzam(user_id=user_id)
     data_status = {
         'theme': theme,
@@ -124,16 +148,28 @@ def status_user_sertificat(user_id):
         'user_id': user_id,
     }
     if dbase.check_exist(user_id=user_id):
-        print('1')
+        print('3')
         id, theme_1, protocol, sertificate, name_protocol, name_sert = dbase.read_sertificat(user_id)
-        protocol = convert_blob(protocol, name_protocol)
-        sertificate = convert_blob(sertificate, name_sert)
         data_status['protocol'] = protocol
         data_status['sertificat'] = sertificate
         data_status['name_protocol'] = name_protocol
         data_status['name_sert'] = name_sert
         print('2')
-    return data_status
+    path = '/Upload_folder'
+    tree = dict(name=path, children=[])
+    try:
+        lst = os.listdir(path)
+    except OSError:
+        pass #ignore errors
+    else:
+        for name in lst:
+            fn = os.path.join(path, name)
+            if os.path.isdir(fn):
+                tree['children'].append(make_tree(fn))
+            else:
+                tree['children'].append(dict(name=fn))
+    return tree
+
 
 # Распаковка теста из БД
 def unpacking_edutest(user_id):
@@ -261,6 +297,8 @@ def image_to_byte_array(image: Image) -> bytes:
 # Ковертация из БД в изображение
 def convert_blob(file_sert, file_name):
     with open(file_name, 'wb') as f:
+        # TODO при записи создать временную директорию или создать   папку upload из которой будет скачиваться файл
+        # TODO из которой по завершению работы или сеанса пользователя удалить файл
         f.write(file_sert)
         return file_name
 

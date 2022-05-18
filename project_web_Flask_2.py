@@ -1,9 +1,10 @@
 # utf-8
 import create_user_sert
 import modules
+import os
 
 from modules import app
-from flask import request, render_template, url_for, redirect, flash, session
+from flask import request, render_template, url_for, redirect, flash, session, send_from_directory, current_app
 from flask_login import login_user, login_required
 from werkzeug.security import check_password_hash  # generate_password_hash
 from UserLogin_2 import UserLogin
@@ -44,19 +45,25 @@ def courses(user_id):
     return render_template('courses.html', data=data)
 
 
-@app.route('/courses/download/<user_id>')
-@login_required
-def download(user_id):
-    data = modules.status_user_sertificat(user_id)
+# @app.route('/courses/download/<user_id>')
+# @login_required
+# def download(user_id):
+#     data = modules.status_user_sertificat(user_id)
     # TODO Нужна ссылка на уже созданный в головном месте файл
     # TODO Когда файлы скачиваются с с браузера - они скаиваются в двоичном виде??
-    # TODO при сохранении их нужно конвертировать а не закачивать в браузер в виде файлов.
-    # TODO  барузере файлы находятся в бинарном виде??
+    # TODO при сохранении их нужно конвертировать, а не закачивать в браузер в виде файлов.
+    # TODO в браузере файлы находятся в бинарном виде??
 
     # TODO render_template заменить на вызов файла из папки с загрузками send ...
     # TODO  на сервере должна быть папка с временными загрузками файлов из БД
+    # return render_template(courses.html, data=data)
 
-    return render_template(courses.html, data=data)
+
+@app.route('/courses/download/<user_id>', methods=['GET', 'POST'])
+def download(iser_id):
+    modules.make_tree(iser_id)
+    uploads = os.path.join(current_app.root_path, app.config['UPLOAD_FOLDER'])
+    return send_from_directory(directory=uploads, filename=filename)
 
 
 @app.route('/edu_mat/<user_id>')
