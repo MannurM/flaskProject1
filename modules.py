@@ -24,7 +24,7 @@ SECRET_KEY = 'fdgfh78@#5?>gfhf89dx,v06k'
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.update(dict(DATABASE=os.path.join(app.root_path, 'pr_ot.db')))
-UPLOAD_FOLDER = 'upload_folder/'
+UPLOAD_FOLDER = 'Upload_folder'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
@@ -107,11 +107,29 @@ def status_user(user_id):
     if dbase.check_exist(user_id=user_id):
         print('1')
         id, theme_1, protocol, sertificate, name_protocol, name_sert = dbase.read_sertificat(user_id)
+
+
+        # os.getcwd() # текущий каталог
+        # os.path.exists('sample_data') # Существоавание файла в этом месте
+        # os.path.exists(os.path.join('sample_data', 'README.md')) # объединение компонентов пути
+        # if not os.path.exists('Upload_folder'):
+        #     os.mkdir('Upload_folder')
+        # os.listdir('sample_data') # Содержимое каталога
+        # Поиск всех файлов с расширением csv
+        # from glob import globlist
+        # (glob(os.path.join('sample_data', '*.csv')))
+        # Перемещение всех файлов с расширением csv
+        # import shutilfor file in list(glob(os.path.join('sample_data', '*.csv'))):
+        # shutil.move(file, 'test_dir')
+        path = r'Upload_folder'
+        os.chdir(path)  # TODO Сохранить файлы протокола и сертификата в папку "Upload_folder"
         protocol = convert_blob(protocol, name_protocol)
         sertificate = convert_blob(sertificate, name_sert)
+        os.chdir('..')
+        print(os.getcwd())
         # protocol.save(os.path.join(app.config['UPLOAD_FOLDER'], name_protocol))
         # sertificate.save(os.path.join(app.config['UPLOAD_FOLDER'], name_sert))
-        # TODO Сохранить файлы протокола и сертификата в папку "Upload_folder"
+
 
 
         data_status['protocol'] = protocol

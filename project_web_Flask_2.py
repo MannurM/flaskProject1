@@ -45,31 +45,13 @@ def courses(user_id):
     return render_template('courses.html', data=data)
 
 
-@app.route('/courses/download/<user_id>')
+@app.route('/courses/download/<filename>')
 @login_required
-def download(user_id):
-    data = modules.status_user_sertificat(user_id)
-    filename = data['name_protocol']
-    uploads = os.getcwd() # TODO Текущий каталог!!!!
-
-
-    # TODO Нужна ссылка на уже созданный в головном месте файл
-    # TODO Когда файлы скачиваются с с браузера - они скаиваются в двоичном виде??
-    # TODO при сохранении их нужно конвертировать, а не закачивать в браузер в виде файлов.
-    # TODO в браузере файлы находятся в бинарном виде??
-    #
-    # TODO render_template заменить на вызов файла из папки с загрузками send ...
-    # TODO  на сервере должна быть папка с временными загрузками файлов из БД
-    # return render_template('courses.html', data=data)
-    return send_from_directory(directory=uploads, filename=filename)
-
-
-# @app.route('/courses/download/<user_id>', methods=['GET', 'POST'])
-# def download(iser_id):
-#     modules.make_tree(iser_id)
-#     uploads = os.path.join(current_app.root_path, app.config['UPLOAD_FOLDER'])
-#     filename =
-#     return send_from_directory(directory=uploads, filename=filename)
+def download(filename):
+    filename = filename
+    path_file = os.path.join(os.getcwd(), modules.app.config['UPLOAD_FOLDER'])
+    uploads = path_file
+    return send_from_directory(uploads, filename, as_attachment=True)
 
 
 @app.route('/edu_mat/<user_id>')
