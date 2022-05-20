@@ -1,7 +1,6 @@
 # utf-8
 import io
 import ast
-import tempfile
 import os
 import sqlite3
 
@@ -105,39 +104,16 @@ def status_user(user_id):
         'sum_just': 0,
         }
     if dbase.check_exist(user_id=user_id):
-        print('1')
         id, theme_1, protocol, sertificate, name_protocol, name_sert = dbase.read_sertificat(user_id)
-
-
-        # os.getcwd() # текущий каталог
-        # os.path.exists('sample_data') # Существоавание файла в этом месте
-        # os.path.exists(os.path.join('sample_data', 'README.md')) # объединение компонентов пути
-        # if not os.path.exists('Upload_folder'):
-        #     os.mkdir('Upload_folder')
-        # os.listdir('sample_data') # Содержимое каталога
-        # Поиск всех файлов с расширением csv
-        # from glob import globlist
-        # (glob(os.path.join('sample_data', '*.csv')))
-        # Перемещение всех файлов с расширением csv
-        # import shutilfor file in list(glob(os.path.join('sample_data', '*.csv'))):
-        # shutil.move(file, 'test_dir')
         path = r'Upload_folder'
-        os.chdir(path)  # TODO Сохранить файлы протокола и сертификата в папку "Upload_folder"
+        os.chdir(path)
         protocol = convert_blob(protocol, name_protocol)
         sertificate = convert_blob(sertificate, name_sert)
         os.chdir('..')
-        print(os.getcwd())
-        # protocol.save(os.path.join(app.config['UPLOAD_FOLDER'], name_protocol))
-        # sertificate.save(os.path.join(app.config['UPLOAD_FOLDER'], name_sert))
-
-
-
         data_status['protocol'] = protocol
         data_status['sertificat'] = sertificate
         data_status['name_protocol'] = name_protocol
         data_status['name_sert'] = name_sert
-
-        print('2')
     return data_status
 
 
@@ -162,38 +138,6 @@ def status_user_sertificat(user_id):
     return data_status
 
 
-# def make_tree(user_id):
-#     theme, count_prob, status_exzam, data_exzam = dbase.getStatus_exzam(user_id=user_id)
-#     data_status = {
-#         'theme': theme,
-#         'status': status_exzam,
-#         'data_exzam': data_exzam,
-#         'user_id': user_id,
-#     }
-#     if dbase.check_exist(user_id=user_id):
-#         print('3')
-#         id, theme_1, protocol, sertificate, name_protocol, name_sert = dbase.read_sertificat(user_id)
-#         data_status['protocol'] = protocol
-#         data_status['sertificat'] = sertificate
-#         data_status['name_protocol'] = name_protocol
-#         data_status['name_sert'] = name_sert
-#         print('2')
-#     path = '/Upload_folder'
-#     tree = dict(name=path, children=[])
-#     try:
-#         lst = os.listdir(path)
-#     except OSError:
-#         pass #ignore errors
-#     else:
-#         for name in lst:
-#             fn = os.path.join(path, name)
-#             if os.path.isdir(fn):
-#                 tree['children'].append(make_tree(fn))
-#             else:
-#                 tree['children'].append(dict(name=fn))
-#     return tree
-
-
 # Распаковка теста из БД
 def unpacking_edutest(user_id):
     list_answer_just = []
@@ -213,7 +157,6 @@ def unpacking_edutest(user_id):
 
 
 # Сравнение ответов в тесте
-# TODO Разделить ответы на экзаменационные и пробные??
 def read_list_just(user_id, data_answer):
     list_label_just = dbase.read_list_just(user_id)
     if not list_label_just:
@@ -247,7 +190,7 @@ def create_name_sert_and_protocol(user_id,  id_course):
     name_protocol = name_template_protocol
     name_sert = name + '_' + first_name + '_' + last_name + '_' + name_sert
     name_protocol = name + '_' + first_name + '_' + last_name + '_' + name_protocol
-    print("names protocol and sertificat!", name_sert, name_protocol )
+    print("names protocol and sertificat!", name_sert, name_protocol)
     # Сохранить следующий номер протокола и сертификата в БД
     data_org = dbase.read_organization()
     data_save = {}
@@ -319,67 +262,26 @@ def image_to_byte_array(image: Image) -> bytes:
 
 # Ковертация из БД в изображение
 def convert_blob(file_sert, file_name):
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        with open(file_name, 'wb') as f:
-            # TODO при записи создать временную директорию или создать   папку upload из которой будет скачиваться файл
-            # TODO из которой по завершению работы или сеанса пользователя удалить файл
-            f.write(file_sert)
-            return f
+    with open(file_name, 'wb') as f:
+        f.write(file_sert)
+        return f
 
 
 # Запись курса в БД
 data_course = {}
+
+
 def create_course(data):
     data_course = data
-    list_input = ['edu_materials', 'edu_other', 'edu_additional', 'template_protocol','template_sertificat']
+    list_input = ['edu_materials', 'edu_other', 'edu_additional', 'template_protocol', 'template_sertificat']
     for key in list_input:
         file = data_course[key]
         name = os.path.basename(file)
         filename, file_extension = os.path.splitext(file)
         key_name = 'name' + '_' + key
         data_course[key_name] = name
-
-
         with open(file, 'rb') as f:
             blob_data = f.read()
             data_course[key] = blob_data
     dbase.create_course(data_course)
     return
-
-
-# # чтение из БД,  конвертация в первоначальный формат
-# def read_course(id_course):
-#     prot, sert, name_prot, name_sert = dbase.read_templates(id_course=id_course)
-#     with open(name_prot,'wb') as f:
-#         protocol = f.write(prot)
-#     with open(name_sert,'wb') as f:
-#         sertificat = f.write(sert)
-#     return protocol, sertificat
-
-
-# Распаковка файла протокола или сертификата из БД
-# def convert_from_binary_data(filename, blob_data):
-#     # 1. передать в функцию имя файла и бинарный файл,
-#     # 2. сразу бинарный файл и  название файла в БД (название файла удостоверения иил протокола сохранить в БД)
-#     # 3. открыть файл с навазнием из БД, закачать бинарные данные данные , закрыть файл, вернуть файл из конвертера
-#     name_file = filename
-#     b_file = io.BytesIO(blob_data)
-#     # при открытии файла -  файл сохраняется в корневом каталоге в нужном docx формате. как оставить его в памяти
-#     # и перенести в к пользователю
-#     with open(name_file, 'wb') as file:
-#         name_file = file.write(blob_data)
-#     b_file.close()
-#     return name_file
-
-
-# Конвертирование файла для записи в БД
-# def convert_path(prot, sert):
-#     with tempfile.TemporaryDirectory() as tmpdirname:
-#         prot = f'{tmpdirname}\_{prot}'
-#         with open(prot, 'rb') as doc:
-#             blob_data_prot = doc.read()
-#         sert = f'{tmpdirname}\_{sert}'
-#         with open(sert, 'rb') as doc:
-#             blob_data_sert = doc.read()
-#         return blob_data_prot, blob_data_sert
-

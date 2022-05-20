@@ -115,7 +115,6 @@ def edu_exz(user_id):
     else:
         data['message'] = 'Попыток больше нет!'
         return redirect(url_for("courses", user_id=user_id))
-    print(data['count_prob'])
     modules.save_status_user(user_id=user_id, data=data)
     return render_template('edu_exz.html', data=data, temp_dict=temp_dict)
 
@@ -142,13 +141,7 @@ def eduexz_rezult(user_id):
     data['just_answer'] = list_answer_just
     if data['sum_just'] >= 3:
         data['status'] = 'Сдал'
-    # if count_prob in [None, 0, 1, 2]:
-    #     count_prob += 1
-    # else:
-    #    data['message'] = 'Попыток больше нет!'
-    # data['count_prob'] = count_prob
     modules.save_status_user(user_id=user_id, data=data)
-
     temp_dict = modules.temp_dict
     return render_template('eduexz_rezult.html', data=data, temp_dict=temp_dict)
 
@@ -197,14 +190,12 @@ def check_profile(user_id):
 @app.route('/sertification/<user_id>')
 @login_required
 def sertification(user_id): #   протокол и удостоверение созданы и записаны в БД
-    print('sertification')
     # Создать изображения сертификатов
     data_sert = create_user_sert.create_sert(user_id)
     sertificat_file = create_user_sert.past_in_templates_sertificat(data_sert)
     protocol_file = create_user_sert.past_in_templates_protocol(data_sert)
     id_course = data_sert['id_course']
     theme, name_protocol, name_sert = modules.create_name_sert_and_protocol(user_id, id_course)
-    # print(type(protocol_file), type(sertificat_file))
     sertificat_file = modules.image_to_byte_array(sertificat_file)
     protocol_file = modules.image_to_byte_array(protocol_file)
     modules.save_sertificat(user_id, theme, protocol_file, sertificat_file, name_protocol, name_sert)
@@ -227,7 +218,6 @@ def create_course():
     data_course = {}
     if request.method == 'POST':
         data_course['theme'] = request.form['theme']
-        print(request.form.get('edu_materials'))  #  ['edu_materials']
         data_course['edu_materials'] = request.form['edu_materials']
         data_course['edu_other'] = request.form['edu_other']
         data_course['edu_additional'] = request.form['edu_additional']
