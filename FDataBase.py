@@ -66,7 +66,18 @@ class FDataBase:
                 count_prob = 0
                 status_exzam = 'Не сдано'
                 date_exzam = 0
-                return count_prob, status_exzam, date_exzam
+                return theme, count_prob, status_exzam, date_exzam
+        except sqlite3.Error as e:
+            print("Ошибка получения статуса экзамена " + str(e))
+        return False
+
+    def checkStatus_exzam(self, user_id):
+        try:
+            user_id = user_id
+            self.__cur.execute(f"SELECT theme, count_prob, status_exzam, data_exzam FROM exzam_rezult WHERE id={user_id}")
+            res = self.__cur.fetchone()
+            if not res:
+                return False
         except sqlite3.Error as e:
             print("Ошибка получения статуса экзамена " + str(e))
         return False
@@ -81,6 +92,7 @@ class FDataBase:
             date_exzam = date_exzam.strftime('%d-%m-%Y %H:%M:%S')
             values = (user_id, theme, count_prob, status_exzam, date_exzam)
             self.__cur.execute("INSERT OR IGNORE INTO exzam_rezult VALUES(?, ?, ?, ?, ?)", values)
+            self.__db.commit()
         except sqlite3.Error as e:
             print("Ошибка записи начального статуса экзамена " + str(e))
         return

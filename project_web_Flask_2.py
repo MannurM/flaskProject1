@@ -42,6 +42,7 @@ def logout():
 @login_required
 def courses(user_id):
     data = modules.status_user(user_id)
+    modules.check_status_exzam(user_id)
     return render_template('courses.html', data=data)
 
 
@@ -75,7 +76,7 @@ def edu_test(user_id):
     return render_template('edu_test.html', data=data, temp_dict=temp_dict)
 
 
-@app.route('/edutest_rezult/,<user_id>', methods=['GET', 'POST'])
+@app.route('/edutest_rezult/<user_id>', methods=['GET', 'POST'])
 @login_required
 def edutest_rezult(user_id):
     data = modules.status_user(user_id=user_id)
@@ -108,22 +109,37 @@ def edu_exz(user_id):
     modules.save_(user_id, list_answer_just, list_label_use)  # Сохранить в БД правильные ответы
     modules.temp_dict = temp_dict
     count_prob = data['count_prob']
-
-    if count_prob in [None, 0, 1, 2]:
+    if not count_prob:
+        count_prob = 0
+    if count_prob in [0, 1, 2]:
         count_prob += 1
         data['count_prob'] = count_prob
     else:
         data['message'] = 'Попыток больше нет!'
+        count_prob += 1
+        data['count_prob'] = count_prob
         return redirect(url_for("courses", user_id=user_id))
     modules.save_status_user(user_id=user_id, data=data)
+    print(data['count_prob'])
+
+    from datetime import datetime
+    now = datetime.now()
+
+    current_time = now.strftime("%H:%M:%S")
+    print("Current Time =", current_time)
+    print(now)
+    # TODO запросить текущее время создать переменную через таймер. начинать сравнивать!
+
+
     return render_template('edu_exz.html', data=data, temp_dict=temp_dict)
 
 
-@app.route('/eduexz_rezult/,<user_id>', methods=['GET', 'POST'])
+@app.route('/eduexz_rezult/<user_id>', methods=['GET', 'POST'])
 @login_required
 def eduexz_rezult(user_id):
     data = modules.status_user(user_id=user_id)
     count_prob = data['count_prob']
+    print(count_prob)
     list_label_use, list_answer_just, data_answer = None, None, None
     if request.method == 'POST':
         data_answer = request.form.getlist('ans')
@@ -131,6 +147,7 @@ def eduexz_rezult(user_id):
             sum_answer = len(data_answer)
             if sum_answer > 5:
                 print('Ответов больше, чем нужно')
+                flash('Ответов больше, чем нужно')
             else:
                 data['sum_just'], list_answer_just, data_answer, list_label_use = \
                     modules.read_list_just(user_id, data_answer)
@@ -140,7 +157,7 @@ def eduexz_rezult(user_id):
     data['all_answer'] = list_label_use  # список номеров вопросов
     data['just_answer'] = list_answer_just
     if data['sum_just'] >= 3:
-        data['status'] = 'Сдал'
+        data['status'] = 'Сдано'
     modules.save_status_user(user_id=user_id, data=data)
     temp_dict = modules.temp_dict
     return render_template('eduexz_rezult.html', data=data, temp_dict=temp_dict)
@@ -226,6 +243,12 @@ def create_course():
         data_course['course_hourses'] = request.form['course_hourses']
         modules.create_course(data_course)
     return render_template('create_course.html')
+
+
+@app.route('/ran_out_of_attempts/<user_id>')
+def ran_out_of_attempts(user_id):
+    print(f'Не сдал товарищ - {user_id}')
+    return redirect(url_for("exit"))
 
 
 if __name__ == '__main__':

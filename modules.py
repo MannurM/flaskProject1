@@ -117,6 +117,15 @@ def status_user(user_id):
     return data_status
 
 
+def check_status_exzam(user_id):
+    if not dbase.checkStatus_exzam(user_id=user_id):
+        print('добавлен статус экзамена!')
+        dbase.insertStatus_exzam(user_id=user_id)
+    else:
+        print('уже есть!')
+    return
+
+
 def status_user_sertificat(user_id):
     theme, count_prob, status_exzam, data_exzam = dbase.getStatus_exzam(user_id=user_id)
     data_status = {
@@ -190,7 +199,6 @@ def create_name_sert_and_protocol(user_id,  id_course):
     name_protocol = name_template_protocol
     name_sert = name + '_' + first_name + '_' + last_name + '_' + name_sert
     name_protocol = name + '_' + first_name + '_' + last_name + '_' + name_protocol
-    print("names protocol and sertificat!", name_sert, name_protocol)
     # Сохранить следующий номер протокола и сертификата в БД
     data_org = dbase.read_organization()
     data_save = {}
