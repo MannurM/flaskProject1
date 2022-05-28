@@ -121,16 +121,6 @@ def edu_exz(user_id):
         return redirect(url_for("courses", user_id=user_id))
     modules.save_status_user(user_id=user_id, data=data)
     print(data['count_prob'])
-
-    from datetime import datetime
-    now = datetime.now()
-
-    current_time = now.strftime("%H:%M:%S")
-    print("Current Time =", current_time)
-    print(now)
-    # TODO запросить текущее время создать переменную через таймер. начинать сравнивать!
-
-
     return render_template('edu_exz.html', data=data, temp_dict=temp_dict)
 
 

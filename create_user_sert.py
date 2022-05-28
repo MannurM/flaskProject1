@@ -376,25 +376,3 @@ def create_dict_label_user_prot():
             },
         }
     return dict_label_user
-
-# if __name__ == '__main__':
-#     user_id = 1
-#     data_sert = create_sert(user_id)
-#     past_in_templates_sertificat(data_sert)
-#     past_in_templates_protocol(data_sert)
-
-# with tempfile.TemporaryDirectory() as tmpdirname:
-#     print('created temporary directory', tmpdirname)
-#     name_tmpdir_prot = f"{tmpdirname}\protocol_n_{data_sert['protocol_N']}_{data['name']}.docx"
-#     print('name_tmpdirprot', name_tmpdir_prot)
-#     doc.save(name_tmpdir_prot)
-#     print('doc.save')
-#     # TODO конвертировать в ПДФ?? потом перевести в бинарные данные
-#     pdf = 'sertif.pdf'
-#     # convert("input.docx")
-#     convert(doc, pdf)
-#     # convert("my_docx_folder/")
-#     print('after convert!')
-#     with open(name_tmpdir_prot, 'rb') as file:
-#         pdf = file.read()
-#         # file.seek(0)

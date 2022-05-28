@@ -15,15 +15,19 @@
     <div class="container">
     <div class="text-end">
     <div class="btn btn-outline-primary me-2">
-    <span id="timer"> 00:01:00 </span>
+    <span id="timer"> 00:30:00 </span>
         <script>
         TMR = setInterval (function () {var y = timer.innerHTML.split (':'),
-        s = y [0] * 3600 + y [1] * 60 + y [2] * 1; if (!s) {clearInterval (TMR); return}
+        s = y [0] * 3600 + y [1] * 60 + y [2] * 1; if (!s) {clearInterval (TMR);
+            alert('Время истекло! Нажмите на кнопку для продолжения');
+            document.location.href = '/courses/{{data.user_id}}'; return}
         --s; function z (x) {return ((x < 10) ? '0' : '') + x}
         var ms = s % 3600, h = (s - ms) / 3600, s = ms % 60, m = (ms - s) / 60;
-        timer.innerHTML = [z (h), z (m), z (s)].join (':')}, 1000);
-        function windowClose () {}
+        timer.innerHTML = [z (h), z (m), z (s)].join (':')}, 1000)
+
+        function windowClose () {};
          </script>
+
     </div>
     </div>
     </div>
