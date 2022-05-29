@@ -179,11 +179,10 @@ def read_list_just(user_id, data_answer):
 # Проверка на изменения в профиле
 def check_save_profile(user_id, save_profile, profile_data):
     for key, value in profile_data.items():
-        if value == '':
+        if not value:
             profile_data[key] = save_profile[key]
         elif value not in save_profile[key]:
             profile_data[key] = save_profile[key]
-    print('after check', profile_data)
     return profile_data
 
 

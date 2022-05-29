@@ -256,7 +256,6 @@ class FDataBase:
         email = self.profile_data['email']
         user_id = user_id
         up_date = (name, firstname, lastname, dateborn, name_suborganization, position, email, user_id)
-        print('update_profile', up_date)
         try:
             sqlite_update = ('Update users set name=?, firstname=?, lastname=?, dateborn=?, name_suborganization=?,\n'
                              '            position=?, email=? where id = ?')
