@@ -32,7 +32,6 @@ def past_in_templates_sertificat(data_sert):
             font = dict_label_user[label]['font']
             fill = dict_label_user[label]['fill']
             draw.text(coordinat, text, font=font, fill=fill)
-    # image_user.show(10)
     return image_user
 
 
@@ -50,7 +49,6 @@ def past_in_templates_protocol(data_sert):
             font = dict_label_user[label]['font']
             fill = dict_label_user[label]['fill']
             draw.text(coordinat, text, font=font, fill=fill)
-    # image_user.show(10)
     return image_user
 
 

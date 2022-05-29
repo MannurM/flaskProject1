@@ -382,5 +382,16 @@ class FDataBase:
             print("Ошибка получения курса из БД(read_templates) " + str(e))
         return
 
+    def create_user(self, id, name, firstname, lastname, dateborn, position, name_suborganization, email,  hpsw, time,
+                    role):
+        values = id, name, firstname, lastname, dateborn, name_suborganization, position, email,  hpsw, time, role
+        print(values)
+        try:
+            self.__cur.execute('INSERT OR REPLACE INTO users VALUES(?,?,?,?,?,?,?,?,?,?,?)', values)
+            self.__db.commit()
+            return
+        except sqlite3.Error as e:
+            print("Ошибка создания пользователя в БД (create_user) " + str(e))
+
     def save_insubd(self, file):
         pass

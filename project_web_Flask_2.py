@@ -19,15 +19,19 @@ def index():
         #  проверки в базе
         if not user:
             flash('ОШИБКА, проверьте фамилию!')
-        elif check_password_hash(user['hpsw'], request.form['psw']):
-            userLogin = UserLogin().create(user)
-            rm = True if request.form.get('remainme') else False
-            login_user(userLogin, remember=rm)
-            user_id = UserLogin.get_id(userLogin)
-            session['name'] = request.form['name']
-            return redirect(url_for('courses', user_id=user_id))
         else:
-            flash('ОШИБКА, проверьте фамилию и пароль')
+            db_psw = user['hpsw']
+            form_psw = request.form['psw']
+            form_psw = modules.invert_psw(form_psw)
+            if check_password_hash(db_psw, form_psw ):
+                userLogin = UserLogin().create(user)
+                rm = True if request.form.get('remainme') else False
+                login_user(userLogin, remember=rm)
+                user_id = UserLogin.get_id(userLogin)
+                session['name'] = request.form['name']
+                return redirect(url_for('courses', user_id=user_id))
+            else:
+                flash('ОШИБКА, проверьте фамилию и пароль')
     return render_template('index.html')
 
 

@@ -135,15 +135,11 @@ def status_user_sertificat(user_id):
         'user_id': user_id,
     }
     if dbase.check_exist(user_id=user_id):
-        print('1')
         id, theme_1, protocol, sertificate, name_protocol, name_sert = dbase.read_sertificat(user_id)
-        # protocol = convert_blob(protocol, name_protocol)
-        # sertificate = convert_blob(sertificate, name_sert)
         data_status['protocol'] = protocol
         data_status['sertificat'] = sertificate
         data_status['name_protocol'] = name_protocol
         data_status['name_sert'] = name_sert
-        print('2')
     return data_status
 
 
@@ -293,3 +289,37 @@ def create_course(data):
             data_course[key] = blob_data
     dbase.create_course(data_course)
     return
+
+
+def invert_psw(psw):
+    len_psw = len(psw)
+    if len_psw == 7:
+        day = psw[:1]
+        month = psw[1:3]
+        year = psw[3:]
+        if len(day) == 1:
+            day = '0' + day
+        form_psw = year + '-' + month + '-' + day
+        return form_psw
+    elif len_psw == 8:
+        day = psw[:2]
+        month = psw[2:4]
+        year = psw[4:]
+        form_psw = year + '-' + month + '-' + day
+        return form_psw
+    elif len_psw == 9:
+        split_index = psw[1]
+        psw_split = psw.split(split_index)
+        day, month, year = psw_split[0], psw_split[1], psw_split[2]
+        if len(day) == 1:
+            day = '0' + day
+        form_psw = year + '-' + month + '-' + day
+        return form_psw
+    elif len_psw == 10:
+        split_index = psw[2]
+        psw_split = psw.split(split_index)
+        day, month, year = psw_split[0],  psw_split[1], psw_split[2]
+        form_psw = year + '-' + month + '-' + day
+        return form_psw
+    else:
+        return psw
