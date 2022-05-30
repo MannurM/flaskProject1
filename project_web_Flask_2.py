@@ -4,7 +4,7 @@ import modules
 import os
 
 from modules import app
-from flask import request, render_template, url_for, redirect, flash, session, send_from_directory, current_app
+from flask import request, render_template, url_for, redirect, flash, session, send_from_directory
 from flask_login import login_user, login_required
 from werkzeug.security import check_password_hash  # generate_password_hash
 from UserLogin_2 import UserLogin
@@ -22,8 +22,8 @@ def index():
         else:
             db_psw = user['hpsw']
             form_psw = request.form['psw']
-            form_psw = modules.invert_psw(form_psw)
-            if check_password_hash(db_psw, form_psw ):
+            form_psw = modules.invert_psw(form_psw)  # приведение к нормальному виду
+            if check_password_hash(db_psw, form_psw):
                 userLogin = UserLogin().create(user)
                 rm = True if request.form.get('remainme') else False
                 login_user(userLogin, remember=rm)
@@ -64,9 +64,9 @@ def download(filename):
 def edu_mat(user_id):
     data = modules.status_user(user_id)
     id_course, theme, edu_mat, edu_other, edu_additional = modules.get_course()
-    data['edu_mat'] = edu_mat
-    data['edu_other'] = edu_other
-    data['edu_additional'] = edu_additional
+    data['edu_mat'] = edu_mat  # TODO все курсы хранить в папке курсы, а в БД только ссылку на этот курс
+    data['edu_other'] = edu_other  # TODO расширяющий материал - графика, презентация, видео, фото
+    data['edu_additional'] = edu_additional  # TODO дополнительный материал - справочники
     return render_template('edu_mat.html', data=data)
 
 
@@ -100,7 +100,6 @@ def edutest_rezult(user_id):
     data['data_answer'] = data_answer
     data['all_answer'] = list_label_use  # список номеров вопросов
     data['just_answer'] = list_answer_just
-
     temp_dict = modules.temp_dict
     return render_template('edutest_rezult.html', data=data, temp_dict=temp_dict)
 
@@ -132,8 +131,7 @@ def edu_exz(user_id):
 @login_required
 def eduexz_rezult(user_id):
     data = modules.status_user(user_id=user_id)
-    count_prob = data['count_prob']
-    print(count_prob)
+    # count_prob = data['count_prob']
     list_label_use, list_answer_just, data_answer = None, None, None
     if request.method == 'POST':
         data_answer = request.form.getlist('ans')
@@ -159,7 +157,7 @@ def eduexz_rezult(user_id):
 
 @app.route('/profile/<user_id>', methods=['GET', 'POST'])
 @login_required
-def profile(user_id): 
+def profile(user_id):
     data = modules.status_user(user_id=user_id)
     profile_data = modules.getprofile(user_id)
     save_profile = {}
@@ -200,7 +198,7 @@ def check_profile(user_id):
 
 @app.route('/sertification/<user_id>')
 @login_required
-def sertification(user_id): #   протокол и удостоверение созданы и записаны в БД
+def sertification(user_id):  # протокол и удостоверение созданы и записаны в БД
     # Создать изображения сертификатов
     data_sert = create_user_sert.create_sert(user_id)
     sertificat_file = create_user_sert.past_in_templates_sertificat(data_sert)
@@ -219,7 +217,7 @@ def register():
 
 
 @app.route("/exit")
-def exit():
+def exit_app():
     session.pop('name', None)
     return render_template('exit.html')
 

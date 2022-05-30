@@ -195,6 +195,7 @@ def create_name_sert_and_protocol(user_id,  id_course):
     name_sert = name + '_' + first_name + '_' + last_name + '_' + name_sert
     name_protocol = name + '_' + first_name + '_' + last_name + '_' + name_protocol
     # Сохранить следующий номер протокола и сертификата в БД
+
     data_org = dbase.read_organization()
     data_save = {}
     data_save['protocol_N'] = data_org['protocol_N']
