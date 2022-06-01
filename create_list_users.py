@@ -52,6 +52,7 @@ def unpacking_file():
     return dict_data_user
 
 
+# проверка на дубли, если будет полный тезка то его удалит
 def del_double(dict):
     dict_data_user = dict
     data_user = []
@@ -82,7 +83,7 @@ def save_in_db(dict):
         # Запись в БД
         time = datetime.datetime.now()
         role = 1
-        # TODO Сделать ли проверку на существование индекса? как и что будет проверяться?
+        # TODO Сделать ли проверку на существование индекса id? как и что будет проверяться?
         dbase.create_user(id, name, firstname, lastname, dateborn, position, name_suborganization, email, hpsw, time,
                           role)
 
