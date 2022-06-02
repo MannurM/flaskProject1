@@ -392,5 +392,16 @@ class FDataBase:
         except sqlite3.Error as e:
             print("Ошибка создания пользователя в БД (create_user) " + str(e))
 
+    def create_test(self, id_qestion, qestion_txt, answer_1, answer_2, answer_3, answer_4, answer_just):
+        values = id, id_qestion, qestion_txt, answer_1, answer_2, answer_3, answer_4, answer_just
+        print(values)
+        try:
+            self.__cur.execute('INSERT OR REPLACE INTO users VALUES(?,?,?,?,?,?,?,?)', values)
+            self.__db.commit()
+            return
+        except sqlite3.Error as e:
+            print("Ошибка создания теста в БД (create_test) " + str(e))
+
+
     def save_insubd(self, file):
         pass

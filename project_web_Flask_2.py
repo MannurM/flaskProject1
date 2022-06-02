@@ -64,9 +64,9 @@ def download(filename):
 def edu_mat(user_id):
     data = modules.status_user(user_id)
     id_course, theme, edu_mat, edu_other, edu_additional = modules.get_course()
-    data['edu_mat'] = edu_mat  # TODO все курсы хранить в папке курсы, а в БД только ссылку на этот курс
-    data['edu_other'] = edu_other  # TODO расширяющий материал - графика, презентация, видео, фото
-    data['edu_additional'] = edu_additional  # TODO дополнительный материал - справочники
+    data['edu_mat'] = edu_mat  #  все курсы хранить в папке курсы, а в БД только ссылку на этот курс
+    data['edu_other'] = edu_other  # расширяющий материал - графика, презентация, видео, фото
+    data['edu_additional'] = edu_additional  # дополнительный материал - справочники
     return render_template('edu_mat.html', data=data)
 
 
@@ -75,7 +75,7 @@ def edu_mat(user_id):
 def edu_test(user_id):
     data = modules.status_user(user_id=user_id)
     temp_dict, list_answer_just, list_label_use = modules.unpacking_edutest(user_id)
-    modules.save_(user_id, list_answer_just, list_label_use)  # Сохранить в БД правильные ответы
+    modules.save_(user_id, list_answer_just, list_label_use)  # Сохранить в БД правильные ответы, выбранные ответы
     modules.temp_dict = temp_dict
     return render_template('edu_test.html', data=data, temp_dict=temp_dict)
 

@@ -52,7 +52,7 @@ def unpacking_file():
     return dict_data_user
 
 
-# проверка на дубли, если будет полный тезка то его удалит
+# проверка на дубли, если будет полный тезка, то его удалит
 def del_double(dict):
     dict_data_user = dict
     data_user = []
