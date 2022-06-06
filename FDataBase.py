@@ -80,7 +80,7 @@ class FDataBase:
                 return False
         except sqlite3.Error as e:
             print("Ошибка получения статуса экзамена " + str(e))
-        return False
+        return
 
     def insertStatus_exzam(self, user_id):
         try:
@@ -146,7 +146,7 @@ class FDataBase:
         try:
             protocol_N = data['protocol_N'] + 1
             number_sert = data['number_sert'] + 1
-            id_org = data['id_org'] # - номер организации в БД
+            id_org = data['id_org']  # - номер организации в БД
             up_date = (protocol_N, number_sert, id_org)
             self.__cur.execute("UPDATE organization_com SET protocol_N=?, number_sert=? WHERE id_org=?", up_date)
         except sqlite3.Error as e:
@@ -392,15 +392,44 @@ class FDataBase:
         except sqlite3.Error as e:
             print("Ошибка создания пользователя в БД (create_user) " + str(e))
 
-    def create_test(self, id_qestion, qestion_txt, answer_1, answer_2, answer_3, answer_4, answer_just):
-        values = id, id_qestion, qestion_txt, answer_1, answer_2, answer_3, answer_4, answer_just
-        print(values)
+    def create_test(self,  qestion_txt, list_answers, answer_just):
+
+        self.label = random.randint(0, 10000)
+        # TODO сделать проверку случайных чисел на наличие в БД
+        label_set = self.check_label()
+        # for label in range(len(label_set)):
+        #     print('label', label_set[label])
+        list_label = []
+        for res in label_set:
+            label_res = dict(res)['label']
+            list_label.append(label_res)
+        label_set = set(list_label)
+
+        while self.label not in label_set:
+            if len(label_set) >= 10000:
+                break
+            break
+        else:
+            label = random.randint(0, 10000)
+
+        values = self.label, qestion_txt, list_answers, answer_just
+        print('create_test', values)
         try:
-            self.__cur.execute('INSERT OR REPLACE INTO users VALUES(?,?,?,?,?,?,?,?)', values)
+            self.__cur.execute('INSERT OR REPLACE INTO tests VALUES(?,?,?,?)', values)
             self.__db.commit()
             return
         except sqlite3.Error as e:
             print("Ошибка создания теста в БД (create_test) " + str(e))
+
+    def check_label(self):
+        try:
+            self.__cur.execute(f"SELECT label FROM tests ")
+            res = self.__cur.fetchall()
+            if res:
+                return res
+        except sqlite3.Error as e:
+            print("Ошибка получения списка label из test " + str(e))
+        return
 
 
     def save_insubd(self, file):

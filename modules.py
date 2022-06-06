@@ -119,8 +119,8 @@ def status_user(user_id):
 
 def check_status_exzam(user_id):
     if not dbase.checkStatus_exzam(user_id=user_id):
-        print('добавлен статус экзамена!')
         dbase.insertStatus_exzam(user_id=user_id)
+        print('добавлен статус экзамена!')
     else:
         print('уже есть!')
     return
@@ -273,8 +273,6 @@ def convert_blob(file_sert, file_name):
 
 # Запись курса в БД
 data_course = {}
-
-
 def create_course(data):
     data_course = data
     list_input = ['edu_materials', 'edu_other', 'edu_additional', 'template_protocol', 'template_sertificat']
@@ -290,7 +288,7 @@ def create_course(data):
     dbase.create_course(data_course)
     return
 
-
+# переделка даты в нужный формат
 def invert_psw(psw):
     len_psw = len(psw)
     if len_psw == 7:
