@@ -243,6 +243,7 @@ class FDataBase:
         id = data['user_id']
         up_date = (count_prob, id)
         self.__cur.execute(f"UPDATE exzam_rezult SET count_prob = ? WHERE id = {id}", up_date)
+        self.__db.commit()
         return
 
     def update_profile(self, user_id, profile_data):
@@ -392,28 +393,12 @@ class FDataBase:
         except sqlite3.Error as e:
             print("Ошибка создания пользователя в БД (create_user) " + str(e))
 
-    def create_test(self,  qestion_txt, list_answers, answer_just):
-
+    def create_test(self, qestion_txt, list_answers, answer_just):
         self.label = random.randint(0, 10000)
-        # TODO сделать проверку случайных чисел на наличие в БД
-        label_set = self.check_label()
-        # for label in range(len(label_set)):
-        #     print('label', label_set[label])
-        list_label = []
-        for res in label_set:
-            label_res = dict(res)['label']
-            list_label.append(label_res)
-        label_set = set(list_label)
-
-        while self.label not in label_set:
-            if len(label_set) >= 10000:
-                break
-            break
-        else:
-            label = random.randint(0, 10000)
-
-        values = self.label, qestion_txt, list_answers, answer_just
+        self.label = self.check_label(self.label)  # проверка метки в БД на совпадение и выбор новой
+        values = self.label, qestion_txt, str(list_answers), answer_just
         print('create_test', values)
+        print('type', type(self.label), type(qestion_txt), type(list_answers), type(answer_just))
         try:
             self.__cur.execute('INSERT OR REPLACE INTO tests VALUES(?,?,?,?)', values)
             self.__db.commit()
@@ -421,7 +406,25 @@ class FDataBase:
         except sqlite3.Error as e:
             print("Ошибка создания теста в БД (create_test) " + str(e))
 
-    def check_label(self):
+    def check_label(self, label):
+        self.label = label
+        label_set = self.all_label()
+
+        list_label = []
+        for res in label_set:
+            label_res = dict(res)['label']
+            list_label.append(label_res)
+        label_set = set(list_label)
+        print(label_set)
+        while self.label not in label_set:
+            if len(label_set) >= 10000:
+                break
+            break
+        else:
+            self.label = random.randint(0, 10000)
+        return self.label
+
+    def all_label(self):
         try:
             self.__cur.execute(f"SELECT label FROM tests ")
             res = self.__cur.fetchall()

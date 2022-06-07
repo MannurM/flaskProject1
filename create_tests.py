@@ -7,7 +7,7 @@ from FDataBase import FDataBase
 # конфигурация
 DATABASE = 'pr_ot.db'
 DEBUG = True
-SECRET_KEY = 'fdgfh78@#5?>gfhf89dx,v06k'  # TODO сделать отдельный файл с паролем
+SECRET_KEY = 'fdgfh78@#5?>gfhf89dx,v06k'
 
 
 def connect_db():
@@ -53,7 +53,7 @@ def unpacking_file():
         id_qestion += 1
         list_answers = [answer_1, answer_2, answer_3, answer_4]
         dict_id_qestion[id_qestion] = {'qestion': qestion, 'list_answers': list_answers, 'answer_just': answer_just}
-
+        # TODO МОжет проверить на правильность наименований до создания словаря!
     return dict_id_qestion
 
 
@@ -84,6 +84,44 @@ def del_double(dict_id_qestion):
     return dict_qestion
 
 
+def remove_unwanted(dict_rezult):
+    dict_qestion = dict_rezult
+    for id_qestion, value in dict_qestion.items():
+        # print(id_qestion, value)
+        for key, val in value.items():
+            list_verific = []
+            if key == 'list_answers':
+                list_answers = dict_qestion[id_qestion][key]
+                answer_new = None
+                # TODO здесь нужна регулярка/  пока так!
+                list_error_symbol = [' ', '.', ':', ';', ')', '/', ',', '\xa0']  # все значения кроме букв и цифр
+                list_error_other = ['a', 'b', 'c', 'd', 'A', 'B', 'C', 'D', '1', '2', '3', '4', 'А', 'Б', 'В', 'Г', 'а',
+                                    'б', 'в', 'г']  # все буквы и цифры!
+                for answer in list_answers:
+                    if answer[0] in list_error_symbol:
+                        answer_new = answer[1:]
+                        answer_old = answer_new
+                        for i in answer_old:
+                            if i in list_error_symbol:
+                                answer_new.replace(i, '', 1)
+                            else:
+                                break
+                    elif answer[0] in list_error_other and answer[1] in list_error_symbol:
+                        answer_new = answer[2:]
+                        answer_old = answer_new
+                        for i in answer_old:
+                            if i in list_error_symbol:
+                                answer_new.replace(i, '', 1)
+                            else:
+                                break
+                    list_verific.append(answer_new)
+                if key == 'answer_just': # TODO проверить правильный ответ
+                    list_answers = dict_qestion[id_qestion][key]
+                dict_qestion[id_qestion][key] = list_verific
+    return dict_qestion
+
+
+
 def save_in_db(dict_rezult):
     db = connect_db()
     dbase = FDataBase(db)
@@ -105,5 +143,6 @@ def save_in_db(dict_rezult):
 if __name__ == '__main__':
     dict_id_qestion = unpacking_file()
     dict_rezult = del_double(dict_id_qestion)
+    dict_rezult = remove_unwanted(dict_rezult)
     save_in_db(dict_rezult)
     # print(dict_rezult)
