@@ -92,32 +92,65 @@ def remove_unwanted(dict_rezult):
             list_verific = []
             if key == 'list_answers':
                 list_answers = dict_qestion[id_qestion][key]
-                answer_new = None
+                # answer_new = None
                 # TODO здесь нужна регулярка/  пока так!
-                list_error_symbol = [' ', '.', ':', ';', ')', '/', ',', '\xa0']  # все значения кроме букв и цифр
+                list_error_symbol = ['.', ':', ';', ')', '/', ',']  # все значения кроме букв и цифр
                 list_error_other = ['a', 'b', 'c', 'd', 'A', 'B', 'C', 'D', '1', '2', '3', '4', 'А', 'Б', 'В', 'Г', 'а',
                                     'б', 'в', 'г']  # все буквы и цифры!
+
+                # TODO не так -  в list_answer собрали все ответы нужно думать и о разделителях ответов
+                old = None
                 for answer in list_answers:
-                    if answer[0] in list_error_symbol:
-                        answer_new = answer[1:]
-                        answer_old = answer_new
-                        for i in answer_old:
-                            if i in list_error_symbol:
-                                answer_new.replace(i, '', 1)
-                            else:
-                                break
-                    elif answer[0] in list_error_other and answer[1] in list_error_symbol:
-                        answer_new = answer[2:]
-                        answer_old = answer_new
-                        for i in answer_old:
-                            if i in list_error_symbol:
-                                answer_new.replace(i, '', 1)
-                            else:
-                                break
+                    answer_new = answer
+
+                    for i in answer:
+                        if i == ' ':
+                            answer_new.replace(i, '', 1)
+                        elif i in list_error_symbol:
+                            answer_new.replace(i, '', 1)
+                        elif i in list_error_other and old:  # как узнать следующее значение
+                            answer_new.replace(old, '', 1)
+                            answer_new.replace(i, '', 1)
+                        else:
+                            old = i
+                            continue
+                        if i and old in list_error_other:
+                            break
                     list_verific.append(answer_new)
-                if key == 'answer_just': # TODO проверить правильный ответ
-                    list_answers = dict_qestion[id_qestion][key]
+
                 dict_qestion[id_qestion][key] = list_verific
+
+                    # if answer[0] in list_error_symbol or answer[0] == ' ':
+                    #     answer_new = answer[1:]
+                    #     answer_old = answer_new
+                    #     for i in answer_old:
+                    #         if i == ' ':
+                    #             answer_new.replace(i, '', 1)
+                    #         else:
+                    #             break
+                    #     answer_old = answer_new
+                    #     for i in answer_old:
+                    #         if i in list_error_symbol:
+                    #             answer_new.replace(i, '', 1)
+                    #         else:
+                    #             break
+                    # elif answer[0] in list_error_other and answer[1] in list_error_symbol:
+                    #     answer_new = answer[2:]
+                    #     answer_old = answer_new
+                    #     for i in answer_old:
+                    #         if i in list_error_symbol:
+                    #             answer_new.replace(i, '', 1)
+                    #         else:
+                    #             break
+
+                # if key == 'answer_just':  # TODO проверить правильный ответ
+                #     list_answers = dict_qestion[id_qestion][key]
+
+
+
+
+
+
     return dict_qestion
 
 
