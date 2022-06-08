@@ -397,10 +397,9 @@ class FDataBase:
         self.label = random.randint(0, 10000)
         self.label = self.check_label(self.label)  # проверка метки в БД на совпадение и выбор новой
         values = self.label, qestion_txt, str(list_answers), answer_just
-        print('create_test', values)
-        print('type', type(self.label), type(qestion_txt), type(list_answers), type(answer_just))
         try:
-            self.__cur.execute('INSERT OR REPLACE INTO tests VALUES(?,?,?,?)', values)
+            # self.__cur.execute('CREATE TABLE IF NOT EXISTS tests')
+            self.__cur.execute('INSERT or REPLACE INTO tests VALUES(?,?,?,?)', values)
             self.__db.commit()
             return
         except sqlite3.Error as e:
@@ -409,20 +408,21 @@ class FDataBase:
     def check_label(self, label):
         self.label = label
         label_set = self.all_label()
-
-        list_label = []
-        for res in label_set:
-            label_res = dict(res)['label']
-            list_label.append(label_res)
-        label_set = set(list_label)
-        print(label_set)
-        while self.label not in label_set:
-            if len(label_set) >= 10000:
-                break
-            break
+        if not label_set:
+            return self.label
         else:
-            self.label = random.randint(0, 10000)
-        return self.label
+            list_label = []
+            for res in label_set:
+                label_res = dict(res)['label']
+                list_label.append(label_res)
+            label_set = set(list_label)
+            while self.label not in label_set:
+                if len(label_set) >= 10000:
+                    break
+                break
+            else:
+                self.label = random.randint(0, 10000)
+            return self.label
 
     def all_label(self):
         try:
