@@ -104,29 +104,19 @@ def remove_unwanted(obj_str):
 
 
 def remove_unwanted_behind(obj_str):
-    print('1')
-    # TODO Сделать проверку последнего символа?? убрать точки, запятые, точки с запятой, лишние пробелы.
     list_error_symbol = ['.', ':', ';', ')', '/', ',']  # все значения кроме букв и цифр
-
     old = None
     answer_new = obj_str
-
     for i in reversed(obj_str):
         if old:
             if i.isalpha() and old.isalpha():
-                print('2')
                 break
         elif i in list_error_symbol:
             answer_new = answer_new.replace(i, '', 1)
-            print('3')
-            print('Запятые', obj_str, answer_new)
         elif i == chr(160):
             answer_new = answer_new.replace(i, '', 1)
-            print('4')
-            print('Space', obj_str, answer_new)
         else:
             old = i
-        print('5', answer_new)
     return answer_new
 
 
@@ -137,16 +127,11 @@ def del_double(dict_id_qestion):
     double_key = []
     key_lict = []
     for id_qestion, value in dict_qestion.items():
-        # print(id_qestion, value)
         for key, val in value.items():
-            # print(key, val)
             if key == 'qestion':
-                # print('qestion')
                 if dict_qestion[id_qestion][key] not in key_lict:
-                    # print('добавлен вопрос в лист вопросов')
                     key_lict.append(dict_qestion[id_qestion][key])
                 else:
-                    # print('добавлен двойной вопрос')
                     double_key.append(id_qestion)  # cоздание списка двойных ключей
                     continue
             else:
@@ -155,6 +140,31 @@ def del_double(dict_id_qestion):
     for id_qestion in double_key:
         del dict_id_qestion[id_qestion]
     return dict_qestion
+
+
+def del_doubl_in_db(dict_rezult):
+    db = connect_db()
+    dbase = FDataBase(db)
+    dict_db = dbase.all_qestion()
+    if dict_db == "False":
+        return dict_rezult
+    db_list = []
+    for r in dict_db:
+        db_list.append(r[0])
+    dict_id = dict_rezult
+    double_qestion = []
+    for id_qestion, value in dict_id.items():
+        for key, val in value.items():
+            if key == 'qestion':
+                if val in db_list:
+                    print('double')
+                    double_qestion.append(id_qestion)
+                else:
+                    print('No double')
+    for id_qestion in double_qestion:
+        del dict_id[id_qestion]
+
+    return dict_id
 
 
 def save_in_db(dict_rezult):
@@ -168,77 +178,13 @@ def save_in_db(dict_rezult):
                 qestion_txt = dict_rezult[id_qestion][key]
             elif key == 'list_answers':
                 list_answers = dict_rezult[id_qestion][key]
-                # print(list_answers)
             elif key == 'answer_just':
                 answer_just = dict_rezult[id_qestion][key]
-        # print('save_in_db', id_qestion)
         dbase.create_test(qestion_txt, list_answers, answer_just)
 
 
 if __name__ == '__main__':
     dict_id_qestion = unpacking_file()
     dict_rezult = del_double(dict_id_qestion)
+    dict_rezult = del_doubl_in_db(dict_rezult)
     save_in_db(dict_rezult)
-    # print(dict_rezult)
-# def remove_unwanted(dict_rezult):
-#     dict_qestion = dict_rezult
-#     for id_qestion, value in dict_qestion.items():
-#         # print(id_qestion, value)
-#         for key, val in value.items():
-#             list_verific = []
-#             if key == 'list_answers':
-#                 list_answers = dict_qestion[id_qestion][key]
-#                 # answer_new = None
-#                 # TODO здесь нужна регулярка/  пока так!
-#                 list_error_symbol = ['.', ':', ';', ')', '/', ',']  # все значения кроме букв и цифр
-#                 list_error_other = ['a', 'b', 'c', 'd', 'A', 'B', 'C', 'D', '1', '2', '3', '4', 'А', 'Б', 'В', 'Г', 'а',
-#                                     'б', 'в', 'г']  # все буквы и цифры!
-#
-#                 # TODO не так -  в list_answer собрали все ответы нужно думать и о разделителях ответов
-#                 old = None
-#                 for answer in list_answers:
-#                     answer_new = answer
-#
-#                     for i in answer:
-#                         if i == ' ':
-#                             answer_new.replace(i, '', 1)
-#                         elif i in list_error_symbol:
-#                             answer_new.replace(i, '', 1)
-#                         elif i in list_error_other and old:  # как узнать следующее значение
-#                             answer_new.replace(old, '', 1)
-#                             answer_new.replace(i, '', 1)
-#                         else:
-#                             old = i
-#                             continue
-#                         if i and old in list_error_other:
-#                             break
-#                     list_verific.append(answer_new)
-#
-#                 dict_qestion[id_qestion][key] = list_verific
-#
-#                     # if answer[0] in list_error_symbol or answer[0] == ' ':
-#                     #     answer_new = answer[1:]
-#                     #     answer_old = answer_new
-#                     #     for i in answer_old:
-#                     #         if i == ' ':
-#                     #             answer_new.replace(i, '', 1)
-#                     #         else:
-#                     #             break
-#                     #     answer_old = answer_new
-#                     #     for i in answer_old:
-#                     #         if i in list_error_symbol:
-#                     #             answer_new.replace(i, '', 1)
-#                     #         else:
-#                     #             break
-#                     # elif answer[0] in list_error_other and answer[1] in list_error_symbol:
-#                     #     answer_new = answer[2:]
-#                     #     answer_old = answer_new
-#                     #     for i in answer_old:
-#                     #         if i in list_error_symbol:
-#                     #             answer_new.replace(i, '', 1)
-#                     #         else:
-#                     #             break
-#
-#                 # if key == 'answer_just':  # TODO проверить правильный ответ
-#                 #     list_answers = dict_qestion[id_qestion][key]
-#     return dict_qestion

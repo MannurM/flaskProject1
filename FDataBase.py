@@ -434,6 +434,14 @@ class FDataBase:
             print("Ошибка получения списка label из test " + str(e))
         return
 
+    def all_qestion(self):
+        try:
+            self.__cur.execute(f"SELECT qestion FROM tests ")
+            res = self.__cur.fetchall()
+            return res
+        except sqlite3.Error as e:
+            print("Ошибка получения списка qestion из test " + str(e))
+        return
 
     def save_insubd(self, file):
         pass
