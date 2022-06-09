@@ -24,7 +24,7 @@ def unpacking_file():
     j = 2
     id_qestion = 0
     dict_id_qestion = {}
-    for i in range(2, max_rows):
+    for i in range(1, max_rows):
         cell_obj = sheet.cell(row=i, column=j)
         qestion = cell_obj.value
         qestion = remove_unwanted(qestion)
@@ -32,18 +32,22 @@ def unpacking_file():
         cell_obj_1 = sheet.cell(row=i, column=j + 1)
         answer_1 = cell_obj_1.value
         answer_1 = remove_unwanted(answer_1)
+        answer_1 = remove_unwanted_behind(answer_1)
 
         cell_obj_2 = sheet.cell(row=i, column=j + 2)
         answer_2 = cell_obj_2.value
         answer_2 = remove_unwanted(answer_2)
+        answer_2 = remove_unwanted_behind(answer_2)
 
         cell_obj_3 = sheet.cell(row=i, column=j + 3)
         answer_3 = cell_obj_3.value
         answer_3 = remove_unwanted(answer_3)
+        answer_3 = remove_unwanted_behind(answer_3)
 
         cell_obj_4 = sheet.cell(row=i, column=j + 4)
         answer_4 = cell_obj_4.value
         answer_4 = remove_unwanted(answer_4)
+        answer_4 = remove_unwanted_behind(answer_4)
 
         cell_obj_5 = sheet.cell(row=i, column=j + 5)
         number_answer_just = cell_obj_5.value
@@ -73,7 +77,6 @@ def remove_unwanted(obj_str):
                         'б', 'в', 'г']  # все буквы и цифры!
     old = None
     answer_new = obj_str
-    answer_old = obj_str
 
     for i in obj_str:
         if old:
@@ -97,7 +100,33 @@ def remove_unwanted(obj_str):
             answer_new = answer_new.replace(i, '', 1)
         else:
             old = i
-    # TODO Сделать проверку последнего символа?? убрать точки, запятые, точки с запятой.
+    return answer_new
+
+
+def remove_unwanted_behind(obj_str):
+    print('1')
+    # TODO Сделать проверку последнего символа?? убрать точки, запятые, точки с запятой, лишние пробелы.
+    list_error_symbol = ['.', ':', ';', ')', '/', ',']  # все значения кроме букв и цифр
+
+    old = None
+    answer_new = obj_str
+
+    for i in reversed(obj_str):
+        if old:
+            if i.isalpha() and old.isalpha():
+                print('2')
+                break
+        elif i in list_error_symbol:
+            answer_new = answer_new.replace(i, '', 1)
+            print('3')
+            print('Запятые', obj_str, answer_new)
+        elif i == chr(160):
+            answer_new = answer_new.replace(i, '', 1)
+            print('4')
+            print('Space', obj_str, answer_new)
+        else:
+            old = i
+        print('5', answer_new)
     return answer_new
 
 
