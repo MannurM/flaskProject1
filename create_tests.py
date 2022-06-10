@@ -120,8 +120,7 @@ def remove_unwanted_behind(obj_str):
     return answer_new
 
 
-# проверка на дубли, если будет полный тезка то его удалит
-# TODO эта проверка только в тексте файла, а есть еще  и БД???
+# проверка на дубли
 def del_double(dict_id_qestion):
     dict_qestion = dict_id_qestion
     double_key = []
@@ -163,7 +162,6 @@ def del_doubl_in_db(dict_rezult):
                     print('No double')
     for id_qestion in double_qestion:
         del dict_id[id_qestion]
-
     return dict_id
 
 
