@@ -243,5 +243,15 @@ def ran_out_of_attempts(user_id):
     return redirect(url_for("exit"))
 
 
+@app.route('/feedback', methods=['GET', 'POST'])
+def feedback():
+    if request.method == 'POST':
+        name = request.form['name']
+        message = request.form['message']
+        print(name, message)
+        flash('Сообщение отправлено ')
+        # TODO отправить сообщение на почту? или седалтьпросто файл лога?
+    return render_template("feedback.html")
+
 if __name__ == '__main__':
     app.run(debug=True)

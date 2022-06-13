@@ -385,7 +385,6 @@ class FDataBase:
     def create_user(self, id, name, firstname, lastname, dateborn, position, name_suborganization, email,  hpsw, time,
                     role):
         values = id, name, firstname, lastname, dateborn, name_suborganization, position, email,  hpsw, time, role
-        print(values)
         try:
             self.__cur.execute('INSERT OR REPLACE INTO users VALUES(?,?,?,?,?,?,?,?,?,?,?)', values)
             self.__db.commit()
@@ -436,11 +435,29 @@ class FDataBase:
 
     def all_qestion(self):
         try:
-            self.__cur.execute(f"SELECT qestion FROM tests ")
+            self.__cur.execute(f"SELECT qestion FROM tests")
             res = self.__cur.fetchall()
             return res
         except sqlite3.Error as e:
             print("Ошибка получения списка qestion из test " + str(e))
+        return
+
+    def all_users(self):
+        try:
+            self.__cur.execute(f"SELECT name, firstname, lastname FROM users")
+            res = self.__cur.fetchall()
+            return res
+        except sqlite3.Error as e:
+            print("Ошибка получения списка name из users " + str(e))
+        return
+
+    def number_id_user(self):
+        try:
+            self.__cur.execute(f"SELECT id FROM users")
+            res = self.__cur.fetchone()
+            return res
+        except sqlite3.Error as e:
+            print("Ошибка получения списка id из users " + str(e))
         return
 
     def save_insubd(self, file):

@@ -70,6 +70,11 @@
     {% endblock %}
     </div>
     <div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+        <a href={{ url_for('feedback') }}>отправить сообщение об ошибке</a><br>
+    </div>
+    </div>
+    <div class="container">
         <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
             <p class="text-center text-muted">{% block footer %}{% endblock %} &copy; 2021 Zaydullin Mannur</p>
         </footer>

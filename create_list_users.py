@@ -18,12 +18,13 @@ def connect_db():
     return conn
 
 
+
 # получить Excel файл,
 # открыть БД, построчно записать таблицу пользователей, изменить пароли в секретные, записать пароли, сохранить БД
 
 
 def unpacking_file():
-    path = "spisok_sotrudnikov.xlsx"
+    path = "spisok_sotrudnikov.xlsx"  # spisok_sotrudnikov.xlsx sv.xlsx
     wb_obj = openpyxl.load_workbook(path)
     sheet = wb_obj.active
     max_rows = sheet.max_row
@@ -62,16 +63,40 @@ def del_double(dict):
             data_user.append(value[0])
         else:
             key_lict.append(key)
-
     for key in key_lict:
         del dict_data_user[key]
     return dict_data_user
 
 
+def del_doubl_in_db(dict_rezult):
+    db = connect_db()
+    dbase = FDataBase(db)
+    dict_db = dbase.all_users()
+    if dict_db == "False":
+        return dict_rezult
+    db_list_user = []
+    for user in dict_db:
+        full_name = ' '.join(user)
+        db_list_user.append(full_name)
+    dict_id = dict_rezult
+    double_user = []
+    for id_user, value in dict_id.items():
+        if value[0] in db_list_user:
+            double_user.append(id_user)
+    for id_user in double_user:
+        del dict_id[id_user]
+    return dict_id
+
+
 def save_in_db(dict):
     db = connect_db()
     dbase = FDataBase(db)
-    for id, value in dict.items():
+    number_id_user = dbase.number_id_user()
+    if number_id_user == 'False':
+        number_id = 0
+    else:
+        number_id = number_id_user[0]
+    for id_user, value in dict.items():
         full_name = value[0]
         name, firstname, lastname = full_name.split()
         dateborn = value[1]
@@ -83,12 +108,14 @@ def save_in_db(dict):
         # Запись в БД
         time = datetime.datetime.now()
         role = 1
-        # TODO Сделать ли проверку на существование индекса id? как и что будет проверяться?
-        dbase.create_user(id, name, firstname, lastname, dateborn, position, name_suborganization, email, hpsw, time,
+        id_user = id_user + int(number_id)
+        dbase.create_user(id_user, name, firstname, lastname, dateborn, position, name_suborganization, email, hpsw, time,
                           role)
+
 
 
 if __name__ == "__main__":
     dict_data_user = unpacking_file()
     dict_data_user = del_double(dict_data_user)
+    dict_data_user = del_doubl_in_db(dict_data_user)
     save_in_db(dict_data_user)
