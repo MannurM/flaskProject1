@@ -63,11 +63,34 @@ def download(filename):
 @login_required
 def edu_mat(user_id):
     data = modules.status_user(user_id)
-    id_course, theme, edu_mat, edu_other, edu_additional = modules.get_course()
-    data['edu_mat'] = edu_mat  #  все курсы хранить в папке курсы, а в БД только ссылку на этот курс
-    data['edu_other'] = edu_other  # расширяющий материал - графика, презентация, видео, фото
-    data['edu_additional'] = edu_additional  # дополнительный материал - справочники
     return render_template('edu_mat.html', data=data)
+
+
+@app.route('/edu_lectorium/<user_id>')
+@login_required
+def edu_lectorium(user_id):
+    data = modules.status_user(user_id)
+    id_course, theme, edu_mat, edu_other, edu_additional = modules.get_course()
+    data['edu_mat'] = edu_mat  # все курсы хранить в папке курсы, а в БД только ссылку на этот курс
+    return render_template('edu_lectorium.html', data=data)
+
+
+@app.route('/edu_grafica/<user_id>')
+@login_required
+def edu_grafica(user_id):
+    data = modules.status_user(user_id)
+    id_course, theme, edu_mat, edu_other, edu_additional = modules.get_course()
+    data['edu_other'] = edu_other  # расширяющий материал - графика, презентация, видео, фото
+    return render_template('edu_grafica.html', data=data)
+
+
+@app.route('/edu_add/<user_id>')
+@login_required
+def edu_add(user_id):
+    data = modules.status_user(user_id)
+    id_course, theme, edu_mat, edu_other, edu_additional = modules.get_course()
+    data['edu_additional'] = edu_additional  # дополнительный материал - справочники
+    return render_template('edu_add.html', data=data)
 
 
 @app.route('/edu_test/<user_id>')
