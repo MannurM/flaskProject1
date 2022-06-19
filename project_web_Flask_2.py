@@ -75,6 +75,15 @@ def edu_lectorium(user_id):
     return render_template('edu_lectorium.html', data=data)
 
 
+@app.route('/edu_base_lect/<user_id>')
+@login_required
+def edu_base_lect(user_id):
+    data = modules.status_user(user_id)
+    id_course, theme, edu_mat, edu_other, edu_additional = modules.get_course()
+    data['edu_mat'] = edu_mat  # все курсы хранить в папке курсы, а в БД только ссылку на этот курс
+    return render_template('edu_base_lect.html', data=data)
+
+
 @app.route('/edu_grafica/<user_id>')
 @login_required
 def edu_grafica(user_id):

@@ -53,13 +53,14 @@
                     <div class="col-6 col-sm-4 themed-grid-col">
                         <a href={{url_for('edu_mat', user_id=user_id)}}>{{edu_materials}}</a>
                     </div>
-                    <div class="col-6 col-sm-4 themed-grid-col">
+                </div>
+                    <div class="col-6 col-lg-4 themed-grid-col">
                         <a href={{url_for('edu_test', user_id=user_id)}}>{{exsersis}}</a>
                     </div>
                     <div class="col-6 col-sm-4 themed-grid-col">
                         <a href={{url_for('edu_exz', user_id=user_id)}}>{{exzamen}}</a>
                     </div>
-                </div>
+
             </div>
             <div class="col-md-4 themed-grid-col">{{status}}
             {% block sert %}{% endblock %}
@@ -70,13 +71,12 @@
     {% endblock %}
     </div>
     <div class="container">
-    <div class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-        <a href={{ url_for('feedback') }}>отправить сообщение об ошибке</a><br>
-    </div>
+
     </div>
     <div class="container">
         <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-            <p class="text-center text-muted">{% block footer %}{% endblock %} &copy; 2021 Zaydullin Mannur</p>
+            <p class="text-center text-muted">{% block footer %}{% endblock %} &copy; 2021-2022 Zaydullin Mannur</p>
+            <p class="text-center text-muted"> Техническая поддержка info@zaydullin.space</p>
         </footer>
     </div>
 </body>
