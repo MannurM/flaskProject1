@@ -93,6 +93,15 @@ def edu_grafica(user_id):
     return render_template('edu_grafica.html', data=data)
 
 
+@app.route('/edu_instructions/<user_id>')
+@login_required
+def edu_instructions(user_id):
+    data = modules.status_user(user_id)
+    id_course, theme, edu_mat, edu_other, edu_additional = modules.get_course()
+    data['edu_other'] = edu_other  # расширяющий материал - графика, презентация, видео, фото
+    return render_template('edu_instructions.html', data=data)
+
+
 @app.route('/edu_add/<user_id>')
 @login_required
 def edu_add(user_id):
