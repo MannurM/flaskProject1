@@ -18,19 +18,13 @@
 {% block content %}
     <div class="container">
         <div class="row mb-3">
-
             {% if data.status == 'Сдано' %}
                 <div class="col-md-4 themed-grid-col">
                     <p>Курс - {{data.theme}}</p>
                     <p>Статус - {{ data.status }} </p>
                 {% if data.sertificat  %}
                     {% block sert %}
-{#                        <form action="{{url_for('courses')}}" method="post" class="needs-validation" novalidate>#}
-                        {#    Form для запроса. data.sertificate - это ссылка на бд  #}
                         <p><a href={{ url_for('download', filename=data.name_sert ) }} >Скачать удостоверение </a></p>
-
-{#                        <p><a href={{ url_for('download', filename=data.name_protocol ) }} > Скачать  протокол  </a></p>#}
-{#                        </form>#}
                     {% endblock %}
                 {% else %}
                     {% block sert_create %}
@@ -70,12 +64,10 @@
                     </div>
                 {% endif %}
             {% endif %}
-
         </div>
     </div>
     {% endblock %}
 
 {% block footer-%}
-
 ГБОУ СОШ (ОЦ) с. Челно-Вершины
 {% endblock -%}

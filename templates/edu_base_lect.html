@@ -45,6 +45,9 @@
     </div>
     {% endblock %}
      <div class="container">
+     <p>
+        <a href={{ url_for('edu_instructions', user_id=data.user_id) }}> Инструкции для сотрудников</a>
+    </p>
      <div class="col-6 col-sm-4 themed-grid-col">
         <a href={{ url_for('edu_grafica',  user_id=data.user_id ) }}>
             <p> Графические материалы (презентации,  картинки, фотографии, буклеты) </p>
@@ -52,7 +55,7 @@
      </div>
      <div class="col-6 col-sm-4 themed-grid-col">
         <a href={{ url_for('edu_add', user_id=data.user_id ) }}>
-            <p>Дополнительные материалы(кодексы, законы, локальные акты школы) </p>
+            <p>Дополнительные материалы (кодексы, законы, локальные акты школы) </p>
         </a>
      </div>
      <div class="col-6 col-sm-4 themed-grid-col">
