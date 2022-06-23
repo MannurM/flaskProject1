@@ -28,7 +28,7 @@
                     {% endblock %}
                 {% else %}
                     {% block sert_create %}
-                    <a href={{ url_for('check_profile', user_id=data.user_id) }}> Создать удостоверение и протокол </a>
+                    <a href={{ url_for('check_profile', user_id=data.user_id) }}> Создать удостоверение</a>
                     {% endblock %}
                 {% endif %}
             {% else %}

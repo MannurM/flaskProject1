@@ -172,7 +172,6 @@ def edu_exz(user_id):
 @login_required
 def eduexz_rezult(user_id):
     data = modules.status_user(user_id=user_id)
-    # count_prob = data['count_prob']
     list_label_use, list_answer_just, data_answer = None, None, None
     if request.method == 'POST':
         data_answer = request.form.getlist('ans')
@@ -239,16 +238,14 @@ def check_profile(user_id):
 
 @app.route('/sertification/<user_id>')
 @login_required
-def sertification(user_id):  # протокол и удостоверение созданы и записаны в БД
+def sertification(user_id):  # удостоверение создано и записано в БД
     # Создать изображения сертификатов
     data_sert = create_user_sert.create_sert(user_id)
     sertificat_file = create_user_sert.past_in_templates_sertificat(data_sert)
-    protocol_file = create_user_sert.past_in_templates_protocol(data_sert)
     id_course = data_sert['id_course']
-    theme, name_protocol, name_sert = modules.create_name_sert_and_protocol(user_id, id_course)
+    theme, name_sert = modules.create_name_sert(user_id, id_course)
     sertificat_file = modules.image_to_byte_array(sertificat_file)
-    protocol_file = modules.image_to_byte_array(protocol_file)
-    modules.save_sertificat(user_id, theme, protocol_file, sertificat_file, name_protocol, name_sert)
+    modules.save_sertificat(user_id, theme, sertificat_file, name_sert)
     return redirect(url_for('courses', user_id=user_id))
 
 
@@ -291,8 +288,9 @@ def feedback():
         message = request.form['message']
         print(name, message)
         flash('Сообщение отправлено ')
-        # TODO отправить сообщение на почту? или седалтьпросто файл лога?
+        # TODO отправить сообщение на почту? или сделать просто файл лога?
     return render_template("feedback.html")
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -142,21 +142,22 @@ class FDataBase:
             print("Ошибка получения данных из БД(organization) " + str(e))
         return
 
-    def save_protocol_N(self, data):
+    def save_sert_N(self, data):
         try:
-            protocol_N = data['protocol_N'] + 1
+            protocol_N = data['protocol_N']
             number_sert = data['number_sert'] + 1
             id_org = data['id_org']  # - номер организации в БД
             up_date = (protocol_N, number_sert, id_org)
-            self.__cur.execute("UPDATE organization_com SET protocol_N=?, number_sert=? WHERE id_org=?", up_date)
+            self.__cur.execute("UPDATE or IGNORE organization_com SET protocol_N=?, number_sert=? WHERE id_org=?",
+                               up_date)
         except sqlite3.Error as e:
             print("Ошибка записи данных в БД(protocol_N) " + str(e))
         return
 
-    def save_sertificat(self, user_id, theme, protocol, sertificate, name_protocol, name_sert):
+    def save_sertificat(self, user_id, theme, sertificate, name_sert):
         try:
-            values = (user_id, theme, protocol, sertificate, name_protocol, name_sert)
-            self.__cur.execute("INSERT OR IGNORE INTO docs VALUES(?,?,?,?,?,?)", values)
+            values = (user_id, theme, sertificate, name_sert)
+            self.__cur.execute("INSERT OR IGNORE INTO docs VALUES(?,?,?,?)", values)
             self.__db.commit()
         except sqlite3.Error as e:
             print("Ошибка записи данных в БД(save_sertificat) " + str(e))
@@ -222,9 +223,12 @@ class FDataBase:
         date_exzam = datetime.datetime.now()
         date_exzam = date_exzam.strftime('%d-%m-%Y %H:%M:%S')
         up_date = (theme, status_course, count_prob, date_exzam)
-        self.__cur.execute(f"UPDATE exzam_rezult SET theme=?, status_exzam=?, count_prob=?, data_exzam=? WHERE id = {user_id}", up_date)
-        self.__db.commit()
-        return
+        try:
+            self.__cur.execute(f"UPDATE exzam_rezult SET theme=?, status_exzam=?, count_prob=?, data_exzam=? WHERE id = {user_id}", up_date)
+            self.__db.commit()
+            return
+        except  sqlite3.Error as e:
+            print("Ошибка обновления данных в БД(save_status_user) " + str(e))
 
     def read_count_prob(self, user_id):
         try:
@@ -380,6 +384,17 @@ class FDataBase:
                 return res
         except sqlite3.Error as e:
             print("Ошибка получения курса из БД(read_templates) " + str(e))
+        return
+
+    def read_templates_protocol(self, id_course):
+        value = 'theme, name_template_protocol'
+        try:
+            self.__cur.execute(f"SELECT {value}  FROM courses WHERE id_course={id_course}")
+            res = self.__cur.fetchone()
+            if res:
+                return res
+        except sqlite3.Error as e:
+            print("Ошибка получения курса из БД(read_templates_protocol) " + str(e))
         return
 
     def create_user(self, id, name, firstname, lastname, dateborn, position, name_suborganization, email,  hpsw, time,

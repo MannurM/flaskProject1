@@ -107,12 +107,9 @@ def status_user(user_id):
         id, theme_1, protocol, sertificate, name_protocol, name_sert = dbase.read_sertificat(user_id)
         path = r'Upload_folder'
         os.chdir(path)
-        protocol = convert_blob(protocol, name_protocol)
         sertificate = convert_blob(sertificate, name_sert)
         os.chdir('..')
-        data_status['protocol'] = protocol
         data_status['sertificat'] = sertificate
-        data_status['name_protocol'] = name_protocol
         data_status['name_sert'] = name_sert
     return data_status
 
@@ -186,23 +183,22 @@ def check_save_profile(user_id, save_profile, profile_data):
     return profile_data
 
 
-# Создание Сертификата и протокола
-def create_name_sert_and_protocol(user_id,  id_course):
+# Создание Сертификата
+def create_name_sert(user_id,  id_course):
     theme, name_template_protocol, name_template_sertificat = dbase.read_templates_names(id_course)
     name, first_name, last_name, dateborn, name_organization, position, email = dbase.getProfile(user_id)
     name_sert = name_template_sertificat
-    name_protocol = name_template_protocol
     name_sert = name + '_' + first_name + '_' + last_name + '_' + name_sert
-    name_protocol = name + '_' + first_name + '_' + last_name + '_' + name_protocol
     # Сохранить следующий номер протокола и сертификата в БД
-
     data_org = dbase.read_organization()
     data_save = {}
+    # TODO проверить дату предидущего экзамена, если совпадает с текущей, то оставить текущий номер протокола
+    # TODO иначе + 1
     data_save['protocol_N'] = data_org['protocol_N']
     data_save['number_sert'] = data_org['number_sert']
     data_save['id_org'] = data_org['id_org']
-    dbase.save_protocol_N(data_save)
-    return theme, name_protocol, name_sert
+    dbase.save_sert_N(data_save)
+    return theme, name_sert
 
 
 # Извлечение из БД учебных материалов по курсу
@@ -250,9 +246,9 @@ def getprofile(user_id):
     return profile_data
 
 
-# Запись в БД созданного сертификата и протокола
-def save_sertificat(user_id, theme, blob_protocol, blob_sertificate, name_protocol, name_sert):
-    dbase.save_sertificat(user_id, theme, blob_protocol, blob_sertificate, name_protocol, name_sert)
+# Запись в БД созданного сертификата
+def save_sertificat(user_id, theme, blob_sertificate, name_sert):
+    dbase.save_sertificat(user_id, theme, blob_sertificate, name_sert)
     return
 
 

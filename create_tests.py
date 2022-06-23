@@ -67,7 +67,6 @@ def unpacking_file():
         id_qestion += 1
         list_answers = [answer_1, answer_2, answer_3, answer_4]
         dict_id_qestion[id_qestion] = {'qestion': qestion, 'list_answers': list_answers, 'answer_just': answer_just}
-
     return dict_id_qestion
 
 

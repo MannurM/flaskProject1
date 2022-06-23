@@ -24,12 +24,27 @@
         {% block login %}
 {#             сделать ввиде цикла вывод или отдельно через <p> #}
 {#            <a href={{ url_for('static', filename=data.edu_mat) }} download>#}
-
-            <p><a href=""> Общие для всех инструкции</a></p>
-            <p><a href=""> Инструкции для педагогического персонала</a></p>
-            <p><a href=""> Инструкции для административно-технического персонала</a></p>
-            <p><a href=""> Инструкции для учебно-вспомогательного персонала</a></p>
-            <p><a href=""> Инструкции для администрации</a></p>
+            <p>Скачать в виде архива(zip)</p>
+            <p>
+                <a href="static/courses/instructions/general/inst_general.zip" download="">
+                    Общие для всех инструкции</a>
+            </p>
+            <p>
+                <a href="static/courses/instructions/ped_pers/ped_pers.zip" download="">
+                    Инструкции для педагогического персонала</a>
+            </p>
+            <p>
+                <a href="static/courses/instructions/adm_tech_pers/addm_tech_pers.zip" download="" >
+                Инструкции для административно-технического персонала</a>
+            </p>
+            <p>
+                <a href="static/courses/instructions/dop_pers/dop_pers" download="">
+                Инструкции для учебно-вспомогательного персонала</a>
+            </p>
+            <p>
+                <a href="static/courses/instructions/adm_pers/adm_pers.zip" download="">
+                    Инструкции для администрации</a>
+            </p>
         {% endblock %}
     </div>
     {% endblock %}

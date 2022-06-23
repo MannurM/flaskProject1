@@ -113,7 +113,6 @@ def save_in_db(dict):
                           role)
 
 
-
 if __name__ == "__main__":
     dict_data_user = unpacking_file()
     dict_data_user = del_double(dict_data_user)
