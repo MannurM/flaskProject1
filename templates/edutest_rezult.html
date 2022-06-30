@@ -11,14 +11,13 @@
  {{data.name}} {{data.firstname}} {{data.lastname}}
 {% endblock %}
 
-
 {% block content %}
     <div class="container">
     Пробный тест по курсу - {{data.theme}}
-        <div class="">
+        <div>
             Правильных ответов - {{ data.sum_just }} из 5
         </div>
-        <div class="">
+        <div>
         {% for qestion, ans in temp_dict.items() %}
             {% set number=loop.index %}
             <p>

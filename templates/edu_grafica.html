@@ -19,36 +19,37 @@
 
 {% block content %}
     {% block body %}
-    <div class="container-sm" width="100%" height="100%">
+    <div class="container">
+    <div class="row mb-3">
+        <div class="col-md-8 themed-grid-col" >
         <h3>Графические материалы по теме - {{ data.theme }}</h3>
         {% block login %}
 
         {% endblock %}
-    </div>
+        </div>
     {% endblock %}
-    <div class="col-6 col-sm-4 themed-grid-col">
-        <a href={{ url_for('edu_lectorium', user_id=data.user_id) }} >
-            <p>Основная лекция, инcтрукции для сотрудников </p>
-        </a>
+        <div class="col-sm-4 themed-grid-col">
+            <H3>Другие материалы</H3>
+            <a href={{ url_for('edu_lectorium', user_id=data.user_id) }} >
+                <p>Основная лекция, инcтрукции для сотрудников </p>
+            </a>
+
+            <a href={{ url_for('edu_add', user_id=data.user_id ) }}>
+                <p>Дополнительные материалы (кодексы, законы, локальные акты школы) </p>
+            </a>
+        </div>
+    </div>
     </div>
     <div class="col-6 col-sm-4 themed-grid-col">
-        <a href={{ url_for('edu_add', user_id=data.user_id ) }}>
-            <p>Дополнительные материалы (кодексы, законы, локальные акты школы) </p>
-        </a>
-    </div>
-     <div class="col-6 col-sm-4 themed-grid-col">
         <a href={{ url_for('edu_test', user_id=data.user_id) }}> Начать пробный тест (нажмите на ссылку!)</a>
     </div>
-      <div class="col-6 col-sm-4 themed-grid-col">
+    <div class="col-6 col-sm-4 themed-grid-col">
         <a href={{ url_for('edu_mat', user_id=data.user_id) }}> Вернуться на страницу курса</a>
     </div>
     <div class="col-6 col-sm-4 themed-grid-col">
         <a href={{ url_for('courses', user_id=data.user_id) }}> Вернуться на страницу всех курсов</a>
     </div>
 {% endblock %}
-
-
 {% block footer %}
-
       ГБОУ СОШ (ОЦ) с. Челно-Вершины
 {% endblock %}

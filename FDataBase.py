@@ -1,6 +1,6 @@
 import sqlite3
 import random
-import datetime
+from datetime import date
 
 
 class FDataBase:
@@ -88,8 +88,7 @@ class FDataBase:
             theme = 'theme'
             count_prob = 0
             status_exzam = 'Не сдано'
-            date_exzam = datetime.datetime.now()
-            date_exzam = date_exzam.strftime('%d-%m-%Y %H:%M:%S')
+            date_exzam = date.today()
             values = (user_id, theme, count_prob, status_exzam, date_exzam)
             self.__cur.execute("INSERT OR IGNORE INTO exzam_rezult VALUES(?, ?, ?, ?, ?)", values)
             self.__db.commit()
@@ -181,6 +180,17 @@ class FDataBase:
             print("Ошибка получения данных из БД(read_sertificat) " + str(e))
         return
 
+    def read_users_exzam(self, theme, current_day, status_exzam):
+        try:
+            self.__cur.execute(f"SELECT id FROM exzam_rezult WHERE theme={theme} AND data_exzam={current_day} AND status_exzam={status_exzam}")
+            res = self.__cur.fetchall()
+            if not res:
+                return False
+            return res
+        except sqlite3.Error as e:
+            print("Ошибка получения статуса экзамена " + str(e))
+
+
     def getUserByEmail(self, email):
         try:
             self.__cur.execute(f"SELECT * FROM users WHERE email = '{email}' LIMIT 1")
@@ -220,8 +230,7 @@ class FDataBase:
         theme = data['theme']
         status_course = data['status']
         count_prob = data['count_prob']
-        date_exzam = datetime.datetime.now()
-        date_exzam = date_exzam.strftime('%d-%m-%Y %H:%M:%S')
+        date_exzam = date.today()
         up_date = (theme, status_course, count_prob, date_exzam)
         try:
             self.__cur.execute(f"UPDATE exzam_rezult SET theme=?, status_exzam=?, count_prob=?, data_exzam=? WHERE id = {user_id}", up_date)
@@ -375,8 +384,8 @@ class FDataBase:
             print("Ошибка получения курса из БД(read_templates) " + str(e))
         return
 
-    def read_templates_names(self, id_course):
-        value = 'theme, name_template_protocol, name_template_sertificat'
+    def read_templates_sert(self, id_course):
+        value = 'theme, name_template_sertificat'
         try:
             self.__cur.execute(f"SELECT {value}  FROM courses WHERE id_course={id_course}")
             res = self.__cur.fetchone()

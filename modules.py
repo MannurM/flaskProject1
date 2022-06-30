@@ -185,15 +185,14 @@ def check_save_profile(user_id, save_profile, profile_data):
 
 # Создание Сертификата
 def create_name_sert(user_id,  id_course):
-    theme, name_template_protocol, name_template_sertificat = dbase.read_templates_names(id_course)
+    theme, name_template_sertificat = dbase.read_templates_sert(id_course)
     name, first_name, last_name, dateborn, name_organization, position, email = dbase.getProfile(user_id)
     name_sert = name_template_sertificat
-    name_sert = name + '_' + first_name + '_' + last_name + '_' + name_sert
-    # Сохранить следующий номер протокола и сертификата в БД
+    name_list = [name, first_name, last_name, name_sert]
+    name_sert = '_'.join(name_list)
+    # Сохранить следующий номер сертификата в БД
     data_org = dbase.read_organization()
     data_save = {}
-    # TODO проверить дату предидущего экзамена, если совпадает с текущей, то оставить текущий номер протокола
-    # TODO иначе + 1
     data_save['protocol_N'] = data_org['protocol_N']
     data_save['number_sert'] = data_org['number_sert']
     data_save['id_org'] = data_org['id_org']
