@@ -1,4 +1,6 @@
 # utf-8
+import datetime
+
 import create_user_sert
 import modules
 import os
@@ -278,7 +280,7 @@ def create_course():
 @app.route('/ran_out_of_attempts/<user_id>')
 def ran_out_of_attempts(user_id):
     print(f'Не сдал товарищ - {user_id}')
-    return redirect(url_for("exit"))
+    return redirect(url_for("exit_app"))
 
 
 @app.route('/feedback', methods=['GET', 'POST'])
@@ -287,8 +289,11 @@ def feedback():
         name = request.form['name']
         message = request.form['message']
         print(name, message)
-        flash('Сообщение отправлено ')
-        # TODO отправить сообщение на почту? или сделать просто файл лога?
+        flash('Сообщение отправлено! ')
+        file = '/logs/user_message.txt'
+        with open(file, 'a') as file:
+            message_data = " ".join([str(datetime.datetime.now()), name, message])
+            file.write(message_data)
     return render_template("feedback.html")
 
 

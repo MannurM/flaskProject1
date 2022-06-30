@@ -18,7 +18,7 @@
 {{data.edu_test}}
 
 {% block content %}
-    {% block body %}\
+    {% block body %}
     <div class="container-sm">
     <div class="row mb-3">
         <div class="col-md-8 themed-grid-col" >
@@ -29,12 +29,12 @@
             <object
             data={{ url_for('static', filename=data.edu_mat) }}
             type="application/pdf"
-            width="740"
+            width="720"
             height="678"
             >
             <iframe
               src={{ url_for('static', filename=data.edu_mat) }}
-              width="740"
+              width="720"
               height="678"
               allow="autoplay">
             <p>This browser does not support PDF!</p>
