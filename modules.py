@@ -88,13 +88,14 @@ def check_edu_test(list_answer_just, data_answer):
 def status_user(user_id):
     name, firstname, lastname = dbase.getStatus_name(user_id=user_id)
     theme, count_prob, status_exzam, data_exzam = dbase.getStatus_exzam(user_id=user_id)
-    id_course, theme, edu_materials, edu_other, edu_additional = dbase.getCourse()
+    id_course, theme, edu_materials, edu_grafica, edu_additional, edu_instr = dbase.getCourse()
     data_status = {
         'id_course': id_course,
         'theme': theme,
         'edu_materials': edu_materials,
-        'edu_other': edu_other,
+        'edu_grafica': edu_grafica,
         'edu_additional': edu_additional,
+        'edu_instr': edu_instr,
         'status': status_exzam,
         'count_prob': count_prob,
         'name': name,
@@ -104,7 +105,7 @@ def status_user(user_id):
         'sum_just': 0,
         }
     if dbase.check_exist(user_id=user_id):
-        id, theme_1, protocol, sertificate, name_protocol, name_sert = dbase.read_sertificat(user_id)
+        id, theme_1, sertificate, name_sert = dbase.read_sertificat(user_id)
         path = r'Upload_folder'
         os.chdir(path)
         sertificate = convert_blob(sertificate, name_sert)
@@ -202,8 +203,8 @@ def create_name_sert(user_id,  id_course):
 
 # Извлечение из БД учебных материалов по курсу
 def get_course():
-    id_course, theme, edu_materials, edu_other, edu_additional = dbase.getCourse()
-    return id_course, theme, edu_materials, edu_other, edu_additional
+    id_course, theme, edu_materials, edu_other, edu_additional, edu_instr = dbase.getCourse()
+    return id_course, theme, edu_materials, edu_other, edu_additional, edu_instr
 
 
 # Запись в БД правильных ответов и использованных вопросов
@@ -316,6 +317,18 @@ def invert_psw(psw):
         return form_psw
     else:
         return psw
+
+
+def read_add(file):
+    data_add = {}
+    with open(file, "r", encoding='utf-8') as file1:
+        while True:
+            line = file1.readline()
+            if not line:
+                break
+            name_str, link_str = line.split(sep='--', maxsplit=1)
+            data_add[name_str] = link_str
+    return data_add
 
 
 #  создание протокола по времени и о наличию  сдавших экзамен.

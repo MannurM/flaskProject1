@@ -63,8 +63,6 @@ def read_data_exzam(id_course):
     dbase = FDataBase(db)
 
 
-
-
 def run(id_course):
     schedule.every().day.at("23:45").do(create_protocol(id_course))
 

@@ -17,7 +17,7 @@ def connect_db():
 
 
 def unpacking_file():
-    path = "static/courses/test_ot.xlsx"
+    path = "static/courses/tests/test_ot.xlsx"
     wb_obj = openpyxl.load_workbook(path)
     sheet = wb_obj.active
     max_rows = sheet.max_row

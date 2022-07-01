@@ -23,11 +23,15 @@
     <div class="row mb-3">
         <div class="col-md-8 themed-grid-col">
             <h3>Дополнительные материалы по теме - {{ data.theme }}</h3>
+            <p>Ссылка откроется в новом окне</p>
             {% block login %}
-
+            {% for key, val in data.edu_additional.items() %}
+                <p>
+                    <a href="{{ val }}" target="_blank"> {{ key }}</a>
+                </p>
+            {% endfor %}
             {% endblock %}
         </div>
-
         <div class="col-sm-4 themed-grid-col">
             <H3>Другие материалы</H3>
             <a href={{ url_for('edu_lectorium', user_id=data.user_id) }} >

@@ -72,8 +72,8 @@ def edu_mat(user_id):
 @login_required
 def edu_lectorium(user_id):
     data = modules.status_user(user_id)
-    id_course, theme, edu_mat, edu_other, edu_additional = modules.get_course()
-    data['edu_mat'] = edu_mat  # все курсы хранить в папке курсы, а в БД только ссылку на этот курс
+    # id_course, theme, edu_mat, edu_grafica, edu_additional, edu_instr = modules.get_course()
+    # data['edu_mat'] = edu_mat  # все курсы хранить в папке курсы, а в БД только ссылку на этот курс
     return render_template('edu_lectorium.html', data=data)
 
 
@@ -81,7 +81,7 @@ def edu_lectorium(user_id):
 @login_required
 def edu_base_lect(user_id):
     data = modules.status_user(user_id)
-    id_course, theme, edu_mat, edu_other, edu_additional = modules.get_course()
+    id_course, theme, edu_mat, edu_grafica, edu_additional, edu_instr = modules.get_course()
     data['edu_mat'] = edu_mat  # все курсы хранить в папке курсы, а в БД только ссылку на этот курс
     return render_template('edu_base_lect.html', data=data)
 
@@ -90,8 +90,8 @@ def edu_base_lect(user_id):
 @login_required
 def edu_grafica(user_id):
     data = modules.status_user(user_id)
-    id_course, theme, edu_mat, edu_other, edu_additional = modules.get_course()
-    data['edu_other'] = edu_other  # расширяющий материал - графика, презентация, видео, фото
+    id_course, theme, edu_mat, edu_grafica, edu_additional, edu_instr = modules.get_course()
+    data['edu_grafica'] = edu_grafica  # расширяющий материал - графика, презентация, видео, фото
     return render_template('edu_grafica.html', data=data)
 
 
@@ -99,8 +99,8 @@ def edu_grafica(user_id):
 @login_required
 def edu_instructions(user_id):
     data = modules.status_user(user_id)
-    id_course, theme, edu_mat, edu_other, edu_additional = modules.get_course()
-    data['edu_other'] = edu_other  # расширяющий материал - графика, презентация, видео, фото
+    id_course, theme, edu_mat, edu_grafica, edu_additional, edu_instr = modules.get_course()
+    data['edu_instr'] = edu_instr  # расширяющий материал - графика, презентация, видео, фото
     return render_template('edu_instructions.html', data=data)
 
 
@@ -108,8 +108,11 @@ def edu_instructions(user_id):
 @login_required
 def edu_add(user_id):
     data = modules.status_user(user_id)
-    id_course, theme, edu_mat, edu_other, edu_additional = modules.get_course()
-    data['edu_additional'] = edu_additional  # дополнительный материал - справочники
+    id_course, theme, edu_mat, edu_grafica, edu_additional, edu_instr = modules.get_course()
+      # дополнительный материал - справочники
+    # TODO сделать функцию  создания ссылок в виде словаря  - это словарь потом распаковывать в страничке
+    edu_additional = 'static/' + edu_additional
+    data['edu_additional'] = modules.read_add(edu_additional)
     return render_template('edu_add.html', data=data)
 
 

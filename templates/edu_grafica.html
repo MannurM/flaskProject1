@@ -24,6 +24,22 @@
         <div class="col-md-8 themed-grid-col" >
         <h3>Графические материалы по теме - {{ data.theme }}</h3>
         {% block login %}
+        <div class="col-xxl-4">
+            <object
+            data={{ url_for('static', filename=data.edu_grafica) }}
+{#            type="application/x-mspowerpoint"#}
+            width="720"
+            height="678"
+            >
+            <iframe
+              src={{ url_for('static', filename=data.edu_grafica) }}
+              width="720"
+              height="678"
+              >
+            <p>This browser does not support PDF!</p>
+            </iframe>
+            </object>
+            </div>
 
         {% endblock %}
         </div>

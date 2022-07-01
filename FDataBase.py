@@ -1,3 +1,4 @@
+import datetime
 import sqlite3
 import random
 from datetime import date
@@ -19,7 +20,7 @@ class FDataBase:
 
     def getCourse(self):
         try:
-            self.__cur.execute(f"SELECT id_course, theme, edu_materials, edu_other, edu_additional FROM courses")
+            self.__cur.execute(f"SELECT id_course, theme, edu_materials, edu_grafica, edu_additional, edu_instr FROM courses")
             res = self.__cur.fetchone()
             if res:
                 return res
@@ -109,7 +110,7 @@ class FDataBase:
 
     def getCourseEdu(self, id_course):
         try:
-            self.__cur.execute(f"SELECT edu_materials, edu_other, edu_additional FROM courses WHERE id_course={id_course}")
+            self.__cur.execute(f"SELECT edu_materials, edu_grafica, edu_additional, edu_instr FROM courses WHERE id_course={id_course}")
             res = self.__cur.fetchone()
             if res:
                 return res
@@ -361,13 +362,14 @@ class FDataBase:
             return
 
     def create_course(self, data):
-        values = data['theme'], data['edu_materials'], data['edu_other'], data['edu_additional'], \
-                  data['template_protocol'], data['template_sertificat'], data['course_hourses'], \
-                 data['name_edu_materials'], data['name_edu_other'], data['name_edu_additional'], \
-                 data['name_template_protocol'], data['name_template_sertificat']
+        data['time'] = datetime.date
+        values = data['theme'], data['edu_materials'], data['edu_grafica'], data['edu_additional'],\
+                 data['edu_instr'], data['time'], data['template_protocol'], data['template_sertificat'],\
+                 data['course_hourses'], data['name_edu_materials'], data['name_edu_other'],\
+                 data['name_edu_additional'], data['name_template_protocol'], data['name_template_sertificat']
 
         try:
-            self.__cur.execute('INSERT OR IGNORE INTO courses VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)', values)
+            self.__cur.execute('INSERT OR IGNORE INTO courses VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)', values)
             self.__db.commit()
             return
         except sqlite3.Error as e:
