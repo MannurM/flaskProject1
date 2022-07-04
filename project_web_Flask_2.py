@@ -250,7 +250,10 @@ def sertification(user_id):  # удостоверение создано и за
     id_course = data_sert['id_course']
     theme, name_sert = modules.create_name_sert(user_id, id_course)
     sertificat_file = modules.image_to_byte_array(sertificat_file)
-    modules.save_sertificat(user_id, theme, sertificat_file, name_sert)
+    date_sert = datetime.datetime.today()
+    data_sert = modules.read_organization()
+    number_sert = data_sert['number_sert']
+    modules.save_sertificat(user_id, theme, sertificat_file, name_sert, number_sert, date_sert)
     return redirect(url_for('courses', user_id=user_id))
 
 

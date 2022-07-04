@@ -4,3 +4,4 @@ Werkzeug~=2.1.1
 docx2pdf==0.1.8
 docxtpl==0.15.2
 openpyxl~=3.0.10
+schedule~=1.1.0

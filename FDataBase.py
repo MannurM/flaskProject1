@@ -74,14 +74,13 @@ class FDataBase:
 
     def checkStatus_exzam(self, user_id):
         try:
-            user_id = user_id
-            self.__cur.execute(f"SELECT theme, count_prob, status_exzam, data_exzam FROM exzam_rezult WHERE id={user_id}")
+            self.__cur.execute(f"SELECT id, theme, count_prob, status_exzam, data_exzam FROM exzam_rezult WHERE id='{user_id}'")
             res = self.__cur.fetchone()
             if not res:
                 return False
         except sqlite3.Error as e:
             print("Ошибка получения статуса экзамена " + str(e))
-        return
+        return res
 
     def insertStatus_exzam(self, user_id):
         try:
@@ -147,27 +146,52 @@ class FDataBase:
             protocol_N = data['protocol_N']
             number_sert = data['number_sert'] + 1
             id_org = data['id_org']  # - номер организации в БД
-            up_date = (protocol_N, number_sert, id_org)
-            self.__cur.execute("UPDATE or IGNORE organization_com SET protocol_N=?, number_sert=? WHERE id_org=?",
+            up_date = (number_sert, id_org)
+            self.__cur.execute("UPDATE or IGNORE organization_com SET number_sert=? WHERE id_org=?",
                                up_date)
+            self.__db.commit()
+        except sqlite3.Error as e:
+            print("Ошибка записи данных в БД(sert_N) " + str(e))
+        return
+
+    def save_protocol_N(self, data):
+        try:
+            protocol_N = data['protocol_N'] + 1
+            id_org = data['id_org']  # - номер организации в БД
+            up_date = (protocol_N, id_org)
+            self.__cur.execute("UPDATE or IGNORE organization_com SET protocol_N=? WHERE id_org=?",
+                               up_date)
+            self.__db.commit()
         except sqlite3.Error as e:
             print("Ошибка записи данных в БД(protocol_N) " + str(e))
         return
 
-    def save_sertificat(self, user_id, theme, sertificate, name_sert):
+
+    def save_sertificat(self, user_id, theme, sertificate, name_sert, number_sert, date_sert):
         try:
-            values = (user_id, theme, sertificate, name_sert)
-            self.__cur.execute("INSERT OR IGNORE INTO docs VALUES(?,?,?,?)", values)
+            values = (user_id, theme, sertificate, name_sert, number_sert, date_sert)
+            self.__cur.execute("INSERT OR IGNORE INTO docs VALUES(?,?,?,?,?,?)", values)
             self.__db.commit()
         except sqlite3.Error as e:
             print("Ошибка записи данных в БД(save_sertificat) " + str(e))
         return
 
-    def check_exist(self, user_id):
-        self.__cur.execute(f"SELECT * FROM docs where id = {user_id}")
-        res = self.__cur.fetchone()
-        return res
-        # -- Вернёт true, если какие - то записи  по  запросу  находятся
+    # def read_sertificat(self, user_id):
+    #     try:
+    #         self.__cur.execute(f"SELECT * FROM docs where id = {user_id}")
+    #         res = self.__cur.fetchone()
+    #         if not res:
+    #             return False
+    #         return res
+    #     except sqlite3.Error as e:
+    #         print("Ошибка записи данных в БД(save_sertificat) " + str(e))
+    #     return
+    #
+    # def check_exist(self, user_id):
+    #     self.__cur.execute(f"SELECT * FROM docs where id = {user_id}")
+    #     res = self.__cur.fetchone()
+    #     return res
+
 
     def read_sertificat(self, user_id):
         try:
@@ -181,15 +205,16 @@ class FDataBase:
             print("Ошибка получения данных из БД(read_sertificat) " + str(e))
         return
 
-    def read_users_exzam(self, theme, current_day, status_exzam):
+    def read_users_exzam(self, current_day):
         try:
-            self.__cur.execute(f"SELECT id FROM exzam_rezult WHERE theme={theme} AND data_exzam={current_day} AND status_exzam={status_exzam}")
-            res = self.__cur.fetchall()
+            self.__cur.execute(f"SELECT id FROM exzam_rezult WHERE data_exzam = '{current_day}'")
+            res = self.__cur.fetchone()
             if not res:
                 return False
             return res
         except sqlite3.Error as e:
-            print("Ошибка получения статуса экзамена " + str(e))
+            print("Ошибка получения статуса экзамена(read_users_exzam) " + str(e))
+        return
 
 
     def getUserByEmail(self, email):
@@ -367,7 +392,6 @@ class FDataBase:
                  data['edu_instr'], data['time'], data['template_protocol'], data['template_sertificat'],\
                  data['course_hourses'], data['name_edu_materials'], data['name_edu_other'],\
                  data['name_edu_additional'], data['name_template_protocol'], data['name_template_sertificat']
-
         try:
             self.__cur.execute('INSERT OR IGNORE INTO courses VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)', values)
             self.__db.commit()
@@ -398,7 +422,7 @@ class FDataBase:
         return
 
     def read_templates_protocol(self, id_course):
-        value = 'theme, name_template_protocol'
+        value = 'name_template_protocol'
         try:
             self.__cur.execute(f"SELECT {value}  FROM courses WHERE id_course={id_course}")
             res = self.__cur.fetchone()

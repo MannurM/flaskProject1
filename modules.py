@@ -105,7 +105,7 @@ def status_user(user_id):
         'sum_just': 0,
         }
     if dbase.check_exist(user_id=user_id):
-        id, theme_1, sertificate, name_sert = dbase.read_sertificat(user_id)
+        id, theme_1, sertificate, name_sert, number_sert, date_sert = dbase.read_sertificat(user_id)
         path = r'Upload_folder'
         os.chdir(path)
         sertificate = convert_blob(sertificate, name_sert)
@@ -133,10 +133,8 @@ def status_user_sertificat(user_id):
         'user_id': user_id,
     }
     if dbase.check_exist(user_id=user_id):
-        id, theme_1, protocol, sertificate, name_protocol, name_sert = dbase.read_sertificat(user_id)
-        data_status['protocol'] = protocol
+        id, theme_1, sertificate, name_sert, number_sert, date_sert = dbase.read_sertificat(user_id)
         data_status['sertificat'] = sertificate
-        data_status['name_protocol'] = name_protocol
         data_status['name_sert'] = name_sert
     return data_status
 
@@ -198,7 +196,7 @@ def create_name_sert(user_id,  id_course):
     data_save['number_sert'] = data_org['number_sert']
     data_save['id_org'] = data_org['id_org']
     dbase.save_sert_N(data_save)
-    return theme, name_sert
+    return theme, name_sert,
 
 
 # Извлечение из БД учебных материалов по курсу
@@ -247,8 +245,8 @@ def getprofile(user_id):
 
 
 # Запись в БД созданного сертификата
-def save_sertificat(user_id, theme, blob_sertificate, name_sert):
-    dbase.save_sertificat(user_id, theme, blob_sertificate, name_sert)
+def save_sertificat(user_id, theme, blob_sertificate, name_sert, number_sert, date_sert):
+    dbase.save_sertificat(user_id, theme, blob_sertificate, name_sert, number_sert, date_sert)
     return
 
 
@@ -329,6 +327,10 @@ def read_add(file):
             name_str, link_str = line.split(sep='--', maxsplit=1)
             data_add[name_str] = link_str
     return data_add
+
+def read_organization():
+    data_sert = dbase.read_organization()
+    return data_sert
 
 
 #  создание протокола по времени и о наличию  сдавших экзамен.

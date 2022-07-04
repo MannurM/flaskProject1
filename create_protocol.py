@@ -1,11 +1,10 @@
-
-import schedule
 import sqlite3
-from datetime import date
+import schedule
 
-import create_user_sert
-from create_user_sert import create_protocol, past_in_templates_protocol
-import modules
+
+from docx import Document
+from docxtpl import DocxTemplate
+from datetime import date, datetime
 from FDataBase import FDataBase
 
 
@@ -19,59 +18,95 @@ def create_prot(id_course):
     db = connect_db()
     dbase = FDataBase(db)
     current_date = date.today()
-    # Скачать имя шаблона протокола
-    theme, name_template_protocol = dbase.read_templates_protocol(id_course)
-
-    # Извлечь номер по организации из БД
+    name_template_protocol = dbase.read_templates_protocol(id_course)
     data_org = dbase.read_organization()
+    data_users_id = dbase.read_users_exzam(current_date)
+    print('data_users_id', data_users_id)
+    if not data_users_id:
+        exit()
+    # print('id', data_users_id)
+    id_course, theme2, course_hourses, template_sertificat, template_protocol, name_template_sertificat, \
+    name_template_protocol = dbase.read_for_sert()
+
+    data_for_prot = []
+    for user_id in data_users_id:
+        data_sert_exzam = dbase.read_sertificat(user_id)
+        id, theme, count_prob, status_exzam, data_exzam = dbase.checkStatus_exzam(user_id)
+        status_exzam = status_exzam
+        number_sert = data_sert_exzam['number_sert']
+        data_id = dbase.getProfile(user_id)
+        full_name = [data_id['name'], data_id['firstname'], data_id['lastname']]
+        name_user = ' '.join(full_name)
+        user_id_data = [user_id, name_user, data_id['position'], data_org['name_suborganization'], status_exzam,
+                        number_sert, data_org['reason_for_checking']]
+        data_for_prot.append(user_id_data)
+
     protocol_N = data_org['protocol_N']
-
-    # Собрать имя протокола
-    date_protocol = [protocol_N, current_date, name_template_protocol]
-    name_protocol = ('_').join(date_protocol)
-
-    # Сделать функцию запроса всех данных из БД за прошедший день и сдавших экзамен по теме
-    status_exzam = 'Сдано'
-    data_users_id = dbase.read_users_exzam(theme, current_date, status_exzam) # id сдавших
-
-
     date_protocol = [str(protocol_N), str(current_date), name_template_protocol]
     name_protocol = ('_').join(date_protocol)
 
-    # Извлечь из БД начинку для протокола
-    # 'name', 'firstname', 'lastname', 'dateborn', 'name_organization', 'position', 'email'
-    #
-    for user_id in data_users_id:
-        data_id = dbase.getProfile(user_id)
-        id_course, theme2, course_hourses, template_sertificat, template_protocol, name_template_sertificat, name_template_protocol \
-            = dbase.read_for_sert()
-
-        protocol_file = create_user_sert.past_in_templates_protocol(data_sert)
-        protocol_file = modules.image_to_byte_array(protocol_file)
-
-
-    # Сохранить следующий номер протокола в БД
     data_save = {}
     data_save['protocol_N'] = data_org['protocol_N']
     data_save['id_org'] = data_org['id_org']
     dbase.save_protocol_N(data_save)
-    # TODO Записать протокол в папку upload_folder/protocol
-    return theme, name_protocol
+    print('data_for_prot', data_for_prot)
+    return name_protocol, data_for_prot, data_org
 
-def read_data_exzam(id_course):
-    db = connect_db()
-    dbase = FDataBase(db)
+
+def convert_protocol(data):
+    doc = DocxTemplate('static/templates_sert/template_protocol.docx')
+    data_sert = data
+    context = {
+               'protocol_N': data_sert['protocol_N'],
+               'name_organization': data_sert['name_organization'],
+               'name_suborganization': data_sert['name_suborganization'],
+               'date_exzam': '01/01/2021',
+               'date_order': data_sert['data_order'],
+               'number_order': data_sert['number_order'],
+               'name_chairman': data_sert['name_chairman'],
+               'position_chairman': data_sert['position_chairman'],
+               'name_member_1': data_sert['name_member_1'],
+               'position_member_1': data_sert['position_member_1'],
+               'name_member_2': data_sert['name_member_2'],
+               'position_member_2': data_sert['position_member_2'],
+               'name_course': 'Охрана труда',
+               'course_hourses': '20',
+               }
+    doc.render(context)
+    doc.save('static/templates_sert/template_protocol_2.docx')
+    return
+
+
+def read_template(data_for_prot, name_protocol):
+    path = 'static/templates_sert/template_protocol_2.docx'
+    doc = Document(path)
+    # pars = doc.paragraphs
+    tables = doc.tables
+    # for num, par in enumerate(pars):
+    #     print(num, par.text)
+    for table in tables:
+        for i, row in enumerate(table.rows):
+            row_list = []
+            for cell in row.cells:
+                row_list.append(cell.text)
+    for row in data_for_prot:
+        cells = table.add_row().cells
+        print(row)
+        for i, val in enumerate(row):
+            print(i, val)
+            cells[i].text = str(val)
+    doc.save(name_protocol)
 
 
 def run(id_course):
-    schedule.every().day.at("23:45").do(create_protocol(id_course))
+    name_protocol, data_for_prot, data_org = create_prot(id_course)
+    # TODO добавить в data_org - дату экзамена, 'name_course': data_sert['theme'], 'course_hourses': data_sert['course_hourses'],
+    convert_protocol(data_org)
+    read_template(data_for_prot, name_protocol)
+    print('ВСЁ!')
 
 
 if __name__ == '__main__':
-    run(1)
+    schedule.every().day.at("19:00").do(run(1))
 
-# data_sert = create_user_sert.create_sert(user_id)
-# sertificat_file = create_user_sert.past_in_templates_sertificat(data_sert)
-# protocol_file = create_user_sert.past_in_templates_protocol(data_sert)
 
-# protocol_file = modules.image_to_byte_array(protocol_file)
