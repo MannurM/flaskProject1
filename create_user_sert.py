@@ -66,7 +66,7 @@ def create_sert(user_id):
         = dbase.read_for_sert()
     data_org = dbase.read_organization()
     name, firstname, lastname, dateborn, name_suborganization, position, email = dbase.getProfile(user_id=user_id)
-    print('read_DB!')
+    # print('read_DB!')
     data_sert = {}
     for key in data_org.keys():
         data_sert[key] = data_org[key]

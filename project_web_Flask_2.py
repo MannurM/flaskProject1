@@ -169,7 +169,7 @@ def edu_exz(user_id):
         data['count_prob'] = count_prob
         return redirect(url_for("courses", user_id=user_id))
     modules.save_status_user(user_id=user_id, data=data)
-    print(data['count_prob'])
+    # print(data['count_prob'])
     return render_template('edu_exz.html', data=data, temp_dict=temp_dict)
 
 

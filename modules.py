@@ -118,9 +118,10 @@ def status_user(user_id):
 def check_status_exzam(user_id):
     if not dbase.checkStatus_exzam(user_id=user_id):
         dbase.insertStatus_exzam(user_id=user_id)
-        print('добавлен статус экзамена!')
+        # print('добавлен статус экзамена!')
     else:
-        print('уже есть!')
+        pass
+        # print('уже есть!')
     return
 
 
