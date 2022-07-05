@@ -46,7 +46,6 @@ class FDataBase:
             self.__cur.execute(f"SELECT name, firstname, lastname FROM users WHERE id = {user_id} LIMIT 1")
             res = self.__cur.fetchone()
             if res:
-                print('res_true', res)
                 return res
             else:
                 print('res_false', res)
@@ -78,9 +77,10 @@ class FDataBase:
             res = self.__cur.fetchone()
             if not res:
                 return False
+            return res
         except sqlite3.Error as e:
             print("Ошибка получения статуса экзамена " + str(e))
-        return res
+        return
 
     def insertStatus_exzam(self, user_id):
         try:
@@ -187,10 +187,10 @@ class FDataBase:
     #         print("Ошибка записи данных в БД(save_sertificat) " + str(e))
     #     return
     #
-    # def check_exist(self, user_id):
-    #     self.__cur.execute(f"SELECT * FROM docs where id = {user_id}")
-    #     res = self.__cur.fetchone()
-    #     return res
+    def check_exist(self, user_id):
+        self.__cur.execute(f"SELECT * FROM docs where id = {user_id}")
+        res = self.__cur.fetchone()
+        return res
 
 
     def read_sertificat(self, user_id):
@@ -430,6 +430,17 @@ class FDataBase:
                 return res
         except sqlite3.Error as e:
             print("Ошибка получения курса из БД(read_templates_protocol) " + str(e))
+        return
+
+    def read_name_course(self, id_course):
+
+        try:
+            self.__cur.execute(f"SELECT theme, course_hourses FROM courses WHERE id_course={id_course}")
+            res = self.__cur.fetchone()
+            if res:
+                return res
+        except sqlite3.Error as e:
+            print("Ошибка получения курса из БД(read_name_course) " + str(e))
         return
 
     def create_user(self, id, name, firstname, lastname, dateborn, position, name_suborganization, email,  hpsw, time,
